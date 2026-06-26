@@ -1,37 +1,40 @@
 import { Link } from "@heroui/react";
 import { Link as RouterLink, Outlet, useParams } from "react-router-dom";
 import { getProject } from "../catalog/projects";
+import { usePageBreadcrumbs } from "../hooks/usePageBreadcrumbs";
+import { useSiteHeaderHeight } from "../hooks/useSiteHeaderHeight";
+import { Breadcrumbs } from "./Breadcrumbs";
+import { GuideSwitcher } from "./guide-nav/GuideSwitcher";
+import { ProjectProgressBar } from "./ProjectProgressBar";
 
 interface SiteLayoutProps {
   children?: React.ReactNode;
 }
 
 export function SiteLayout({ children }: SiteLayoutProps) {
-  const { projectId } = useParams();
-  const activeProject = projectId ? getProject(projectId) : undefined;
+  const { projectId, guideSlug } = useParams();
+  const breadcrumbs = usePageBreadcrumbs();
+  const headerRef = useSiteHeaderHeight();
+  const project = projectId ? getProject(projectId) : undefined;
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b border-default-200 bg-white/90 backdrop-blur">
+      <header
+        ref={headerRef}
+        className="sticky top-0 z-40 border-b border-default-200 bg-white/95 backdrop-blur"
+      >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
-          <div className="flex min-w-0 items-center gap-3">
-            <RouterLink
-              className="flex shrink-0 flex-col gap-0.5 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
-              to="/"
-            >
-              <span className="text-xs font-semibold uppercase tracking-wide text-primary sm:text-sm">
-                OpenPaw Labs
-              </span>
-              <span className="text-base font-bold tracking-tight text-default-950 sm:text-lg">
-                DIY Guides
-              </span>
-            </RouterLink>
-            {activeProject && (
-              <span className="hidden min-w-0 items-center gap-2 border-l border-default-200 pl-3 text-sm text-default-500 sm:flex">
-                <span className="truncate">{activeProject.title}</span>
-              </span>
-            )}
-          </div>
+          <RouterLink
+            className="flex shrink-0 flex-col gap-0.5 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+            to="/"
+          >
+            <span className="text-xs font-semibold uppercase tracking-wide text-primary sm:text-sm">
+              OpenPaw Labs
+            </span>
+            <span className="text-base font-bold tracking-tight text-default-950 sm:text-lg">
+              DIY Guides
+            </span>
+          </RouterLink>
 
           <nav aria-label="Site" className="flex items-center gap-4">
             <RouterLink
@@ -50,6 +53,30 @@ export function SiteLayout({ children }: SiteLayoutProps) {
             </Link>
           </nav>
         </div>
+
+        {breadcrumbs && (
+          <div className="border-t border-default-200">
+            <div className="mx-auto w-full max-w-7xl px-4 py-2 sm:px-6">
+              <Breadcrumbs items={breadcrumbs} />
+            </div>
+          </div>
+        )}
+
+        {project && !guideSlug && (
+          <div className="border-t border-default-200">
+            <div className="mx-auto w-full max-w-7xl px-4 py-3 sm:px-6">
+              <ProjectProgressBar project={project} />
+            </div>
+          </div>
+        )}
+
+        {project && guideSlug && (
+          <div className="border-t border-default-200 lg:hidden">
+            <div className="mx-auto w-full max-w-7xl px-4 py-3 sm:px-6">
+              <GuideSwitcher currentSlug={guideSlug} project={project} />
+            </div>
+          </div>
+        )}
       </header>
 
       <div className="flex-1">{children ?? <Outlet />}</div>
