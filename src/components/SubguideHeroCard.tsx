@@ -1,6 +1,6 @@
 import { Button, Card, Chip } from "@heroui/react";
 import { DifficultyBadge } from "@openpawlabs/diy-guides-ui";
-import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { SubguideEntry } from "../catalog/types";
 import { useGuideProgress } from "../hooks/useGuideProgress";
 import { getGuideMetadata, resolveHeroImage } from "../lib/guides/metadata";
@@ -19,6 +19,7 @@ const statusColor = {
 } as const;
 
 export function SubguideHeroCard({ projectId, subguide, index }: SubguideHeroCardProps) {
+  const navigate = useNavigate();
   const metadata = getGuideMetadata(subguide.path);
   const hero = resolveHeroImage(subguide.path, metadata);
   const { status, progress } = useGuideProgress(projectId, subguide.slug);
@@ -78,9 +79,12 @@ export function SubguideHeroCard({ projectId, subguide, index }: SubguideHeroCar
           </div>
 
           <div>
-            <RouterLink to={`/projects/${projectId}/${subguide.slug}`}>
-              <Button variant="primary">Open guide</Button>
-            </RouterLink>
+            <Button
+              variant="primary"
+              onPress={() => navigate(`/projects/${projectId}/${subguide.slug}`)}
+            >
+              Open guide
+            </Button>
           </div>
         </div>
       </div>

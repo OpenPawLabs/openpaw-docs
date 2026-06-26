@@ -1,6 +1,6 @@
 import { Button, Card, Chip } from "@heroui/react";
 import { DifficultyBadge } from "@openpawlabs/diy-guides-ui";
-import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { ProjectEntry } from "../catalog/types";
 import { getGuideMetadata, resolveHeroImage } from "../lib/guides/metadata";
 
@@ -9,6 +9,7 @@ interface ProjectHeroCardProps {
 }
 
 export function ProjectHeroCard({ project }: ProjectHeroCardProps) {
+  const navigate = useNavigate();
   const overview = getGuideMetadata(project.overviewPath);
   const hero = resolveHeroImage(project.overviewPath, overview);
   const difficulty = overview?.difficulty;
@@ -46,11 +47,13 @@ export function ProjectHeroCard({ project }: ProjectHeroCardProps) {
           </div>
 
           <div>
-            <RouterLink to={`/projects/${project.id}`}>
-              <Button size="lg" variant="primary">
-                View guide collection
-              </Button>
-            </RouterLink>
+            <Button
+              size="lg"
+              variant="primary"
+              onPress={() => navigate(`/projects/${project.id}`)}
+            >
+              View guide collection
+            </Button>
           </div>
         </div>
       </div>
