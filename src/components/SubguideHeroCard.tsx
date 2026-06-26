@@ -37,8 +37,8 @@ export function SubguideHeroCard({ projectId, subguide, index }: SubguideHeroCar
       to={`/projects/${projectId}/${subguide.slug}`}
     >
       <Card className="overflow-hidden transition-shadow group-hover:shadow-lg">
-        <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-          <div className="relative aspect-[16/9] min-h-44 bg-default-100 md:aspect-auto md:min-h-56">
+        <div className="grid items-center gap-0 grid-cols-[minmax(0,4fr)_minmax(0,6fr)] sm:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] md:grid-cols-[minmax(0,4fr)_minmax(0,6fr)]">
+          <div className="relative flex aspect-[16/9] h-42 items-center justify-center overflow-hidden bg-default-100 aspect-auto sm:h-48 md:h-54">
             <HeroImage alt={hero.alt} label={title} src={hero.src} />
             {status === "complete" && (
               <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-success px-2.5 py-1 text-xs font-semibold text-white shadow">
@@ -56,19 +56,12 @@ export function SubguideHeroCard({ projectId, subguide, index }: SubguideHeroCar
             )}
           </div>
 
-          <div className="flex flex-col justify-center gap-4 p-6">
-            <div className="flex flex-wrap items-center gap-2">
-              <Chip variant="soft">
-                <Chip.Label>Step {index + 1}</Chip.Label>
-              </Chip>
+          <div className="flex flex-col justify-center gap-1 sm:gap-4 p-1 sm:p-6">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+              
               {status !== "complete" && (
                 <Chip color={statusColor[status]} variant="soft">
-                  <Chip.Label>{statusLabel(status)}</Chip.Label>
-                </Chip>
-              )}
-              {subguide.optional && (
-                <Chip variant="soft">
-                  <Chip.Label>Optional</Chip.Label>
+                  <Chip.Label>{metadata?.timeEstimate}</Chip.Label>
                 </Chip>
               )}
               {subguide.shared && (
@@ -79,16 +72,18 @@ export function SubguideHeroCard({ projectId, subguide, index }: SubguideHeroCar
               {metadata?.difficulty && (
                 <DifficultyBadge difficulty={metadata.difficulty} size="sm" />
               )}
+              {status !== "complete" && (
+                <Chip color={statusColor[status]} variant="soft">
+                  <Chip.Label>{statusLabel(status)}</Chip.Label>
+                </Chip>
+              )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               <h3 className="text-2xl font-bold tracking-tight text-default-950">
                 {title}
               </h3>
               <p className="text-default-600">{subguide.description}</p>
-              {metadata?.timeEstimate && (
-                <p className="text-sm text-default-500">{metadata.timeEstimate}</p>
-              )}
               {status === "in-progress" && progress && progress.total > 0 && (
                 <p className="text-sm text-default-500">
                   {progress.completed} / {progress.total} steps complete

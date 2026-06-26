@@ -20,8 +20,8 @@ export function ProjectHeroCard({ project }: ProjectHeroCardProps) {
       to={`/projects/${project.id}`}
     >
       <Card className="overflow-hidden transition-shadow group-hover:shadow-lg">
-        <div className="grid gap-0 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-          <div className="relative aspect-[16/9] min-h-48 bg-default-100 lg:aspect-auto lg:min-h-72">
+        <div className="grid items-center gap-0 sm:grid-cols-[minmax(0,4fr)_minmax(0,6fr)]">
+          <div className="relative flex aspect-[16/9] h-48 items-center justify-center overflow-hidden bg-default-100 aspect-auto sm:h-72 lg:h-96">
             <HeroImage
               alt={hero.alt}
               label={project.title}
