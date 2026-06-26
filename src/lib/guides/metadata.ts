@@ -1,5 +1,5 @@
 import type { GuideHeaderMetadata, GuidesMetadataMap } from "../../catalog/types";
-import metadata from "../../../public/guides-metadata.json";
+import metadata from "../../guides-metadata.json";
 
 const guidesMetadata = metadata as GuidesMetadataMap;
 

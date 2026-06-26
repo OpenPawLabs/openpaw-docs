@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getProject } from "../catalog/projects";
-import { getGuideNavigation } from "../lib/guides/navigation";
+import { getGuideNavigation, subguideTitle } from "../lib/guides/navigation";
 
 const project = getProject("bb-lsm6dsv")!;
 
@@ -34,5 +34,13 @@ describe("getGuideNavigation", () => {
 
   it("returns undefined for an unknown slug", () => {
     expect(getGuideNavigation(project, "nope")).toBeUndefined();
+  });
+});
+
+describe("subguideTitle", () => {
+  it("prefers authored metadata title over catalog fallback", () => {
+    const subguide = project.subguides.find((entry) => entry.slug === "0-overview")!;
+    expect(subguideTitle(subguide)).toBe("Overview Guide");
+    expect(subguide.title).toBe("Overview");
   });
 });

@@ -7,7 +7,7 @@ import { parseGuideHeader } from "../src/lib/guides/parseGuideHeader";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
 const guidesDir = join(rootDir, "public/guides");
-const outputPath = join(rootDir, "public/guides-metadata.json");
+const outputPath = join(rootDir, "src/guides-metadata.json");
 
 function walkGuides(
   directory: string,
@@ -46,7 +46,7 @@ function main() {
 
   writeFileSync(outputPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf8");
   console.log(
-    `Extracted metadata for ${Object.keys(metadata).length} guides → public/guides-metadata.json`,
+    `Extracted metadata for ${Object.keys(metadata).length} guides → src/guides-metadata.json`,
   );
 }
 
