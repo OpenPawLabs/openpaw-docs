@@ -97,9 +97,9 @@ export function GuidePage() {
   const navigation = getGuideNavigation(project, guideSlug);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+    <div className="mx-auto w-full max-w-7xl px-4 py-3 sm:py-8 sm:px-6 lg:py-10">
       <Breadcrumbs
-        className="mb-6"
+        className="mb-3 sm:mb-4"
         items={[
           { label: "Projects", to: "/" },
           { label: project.title, to: `/projects/${project.id}` },

@@ -43,8 +43,8 @@ function ProjectCollection({ project }: { project: NonNullable<ReturnType<typeof
         : "Review project";
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 sm:gap-10 px-4 py-8 sm:px-6 lg:py-10">
-      <header className="space-y-4">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 sm:gap-10 px-4 py-3 sm:py-6 sm:px-6 lg:py-10">
+      <header className="space-y-2 sm:space-y-4">
         <Breadcrumbs
           items={[{ label: "Projects", to: "/" }, { label: project.title }]}
         />
@@ -83,7 +83,7 @@ function ProjectCollection({ project }: { project: NonNullable<ReturnType<typeof
         </div>
       </header>
 
-      <section aria-label="Guide collection" className="flex flex-col gap-6">
+      <section aria-label="Guide collection" className="flex flex-col gap-3 sm:gap-6">
         {project.subguides.map((subguide, index) => (
           <SubguideHeroCard
             index={index}
