@@ -24,7 +24,9 @@ describe("routing", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "DIY SlimeVR Trackers" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("3D Print Parts")).toBeInTheDocument();
   });
 });

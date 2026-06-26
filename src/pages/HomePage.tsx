@@ -3,7 +3,7 @@ import { ProjectHeroCard } from "../components/ProjectHeroCard";
 
 export function HomePage() {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-10">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6 lg:py-10">
       <header className="space-y-3">
         <p className="text-sm font-semibold uppercase tracking-wide text-primary">
           Documentation
