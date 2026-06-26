@@ -1,0 +1,44 @@
+{
+  "bb-lsm6dsv/0-overview": {
+    "title": "Overview Guide",
+    "difficulty": "easy",
+    "timeEstimate": "30 minutes",
+    "meta": "Draft",
+    "heroImage": "./images/trackers-with-dock-wip-1.png"
+  },
+  "bb-lsm6dsv/1-3d-prints": {
+    "title": "3D Print Parts",
+    "difficulty": "easy",
+    "timeEstimate": "6 Hours (Printing)",
+    "meta": "Draft",
+    "heroImage": "./images/3d-printer-2.jpg"
+  },
+  "bb-lsm6dsv/2-tracker-assembly": {
+    "title": "Tracker Assembly",
+    "difficulty": "easy",
+    "timeEstimate": "30 minutes",
+    "meta": "Draft",
+    "heroImage": "./images/trackers-with-dock-wip.png"
+  },
+  "bb-lsm6dsv/3-strap-assembly": {
+    "title": "Strap Assembly",
+    "difficulty": "easy",
+    "timeEstimate": "30 minutes",
+    "meta": "Draft",
+    "heroImage": "./images/8-case-3dfile-screenshot.jpg"
+  },
+  "common/0-onetime-tracker-setup": {
+    "title": "One-time Setup",
+    "difficulty": "easy",
+    "timeEstimate": "30 minutes",
+    "meta": "Draft",
+    "heroImage": "./images/8-case-3dfile-screenshot.jpg"
+  },
+  "common/1-vrchat-use": {
+    "title": "Daily VR Use!",
+    "difficulty": "easy",
+    "timeEstimate": "30 minutes",
+    "meta": "Draft",
+    "heroImage": "./images/8-case-3dfile-screenshot.jpg"
+  }
+}
