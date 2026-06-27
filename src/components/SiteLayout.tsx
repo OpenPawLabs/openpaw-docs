@@ -1,6 +1,7 @@
 import { Link } from "@heroui/react";
 import { Link as RouterLink, Outlet, useParams } from "react-router-dom";
 import { getProject } from "../catalog/projects";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import { usePageBreadcrumbs } from "../hooks/usePageBreadcrumbs";
 import { useSiteHeaderHeight } from "../hooks/useSiteHeaderHeight";
 import { Breadcrumbs } from "./Breadcrumbs";
@@ -15,7 +16,9 @@ export function SiteLayout({ children }: SiteLayoutProps) {
   const { projectId, guideSlug } = useParams();
   const breadcrumbs = usePageBreadcrumbs();
   const headerRef = useSiteHeaderHeight();
+  const isMdUp = useMediaQuery("(min-width: 768px)");
   const project = projectId ? getProject(projectId) : undefined;
+  const showProjectProgress = project && !guideSlug;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -62,10 +65,10 @@ export function SiteLayout({ children }: SiteLayoutProps) {
           </div>
         )}
 
-        {project && !guideSlug && (
+        {showProjectProgress && !isMdUp && (
           <div className="border-t border-default-200">
             <div className="mx-auto w-full max-w-7xl px-4 py-3 sm:px-6">
-              <ProjectProgressBar project={project} />
+              <ProjectProgressBar project={project} variant="inline" />
             </div>
           </div>
         )}
@@ -78,6 +81,23 @@ export function SiteLayout({ children }: SiteLayoutProps) {
           </div>
         )}
       </header>
+
+      {showProjectProgress && isMdUp && (
+        <>
+          <div
+            aria-live="polite"
+            className="pointer-events-none fixed inset-x-0 z-30"
+            style={{ top: "var(--site-header-height)" }}
+          >
+            <div className="mx-auto flex max-w-7xl justify-end px-4 pt-3 sm:px-6">
+              <div className="pointer-events-auto">
+                <ProjectProgressBar project={project} variant="floating" />
+              </div>
+            </div>
+          </div>
+          <div className="sm:mt-15 lg:mt-5"></div>
+        </>
+      )}
 
       <div className="flex-1">{children ?? <Outlet />}</div>
 

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AppRoutes } from "../App";
 
 describe("routing", () => {
@@ -43,6 +43,35 @@ describe("routing", () => {
       "href",
       "/projects/bb-lsm6dsv/0-overview",
     );
+  });
+
+  it("renders floating project progress outside the header on md+ screens", () => {
+    vi.spyOn(window, "matchMedia").mockImplementation((query: string) => ({
+      matches: query === "(min-width: 768px)",
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    const { container } = render(
+      <MemoryRouter initialEntries={["/projects/bb-lsm6dsv"]}>
+        <AppRoutes />
+      </MemoryRouter>,
+    );
+
+    const progressbar = screen.getByRole("progressbar", { name: "Project progress" });
+    const header = container.querySelector("header");
+
+    expect(header?.contains(progressbar)).toBe(false);
+    expect(progressbar.closest("[aria-live='polite']")).toBeInTheDocument();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("renders guide navigation landmarks on a guide page", () => {
