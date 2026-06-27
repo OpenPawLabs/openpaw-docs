@@ -99,7 +99,7 @@ export function SiteLayout({ children }: SiteLayoutProps) {
 
       <div className="flex-1">{children ?? <Outlet />}</div>
 
-      <footer className="mt-12 border-t border-default-200 bg-white">
+      <footer className="mt-4 border-t border-default-200 bg-white">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-default-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <p className="max-w-prose">
             Open-source DIY guides for makers, built by{" "}
