@@ -41,7 +41,7 @@ export function ProjectHeroCard({ project }: ProjectHeroCardProps) {
               <h2 className="text-3xl font-bold tracking-tight text-default-950 sm:text-4xl">
                 {project.title}
               </h2>
-              <p className="max-w-prose text-default-600">{project.description}</p>
+              <p className="max-w-prose text-default-600 md:text-lg">{project.description}</p>
             </div>
 
             <span className="inline-flex items-center gap-1 font-semibold text-primary group-hover:gap-2 transition-[gap]">

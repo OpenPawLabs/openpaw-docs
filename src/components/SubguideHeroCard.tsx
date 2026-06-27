@@ -83,7 +83,7 @@ export function SubguideHeroCard({ projectId, subguide, index }: SubguideHeroCar
               <h3 className="text-2xl font-bold tracking-tight text-default-950">
                 {title}
               </h3>
-              <p className="text-default-600">{subguide.description}</p>
+              <p className="text-default-600 md:text-lg">{subguide.description}</p>
               {status === "in-progress" && progress && progress.total > 0 && (
                 <p className="text-sm text-default-500">
                   {progress.completed} / {progress.total} steps complete
