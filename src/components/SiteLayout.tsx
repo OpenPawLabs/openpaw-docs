@@ -28,13 +28,11 @@ export function SiteLayout({ children }: SiteLayoutProps) {
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
           <RouterLink
-            className="flex shrink-0 flex-col gap-0.5 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+            className="flex shrink-0 flex-row gap-4 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
             to="/"
           >
-            <span className="text-xs font-semibold uppercase tracking-wide text-primary sm:text-sm">
-              OpenPaw Labs
-            </span>
-            <span className="text-base font-bold tracking-tight text-default-950 sm:text-lg">
+            <img src="/full-logo-purple.png" alt="OpenPaw Labs" className="h-4 sm:h-6" />
+            <span className="h-auto text-base font-bold tracking-tight text-default-950 sm:text-lg">
               DIY Guides
             </span>
           </RouterLink>
