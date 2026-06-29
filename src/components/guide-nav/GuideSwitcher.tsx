@@ -39,7 +39,7 @@ export function GuideSwitcher({ project, currentSlug }: GuideSwitcherProps) {
     <div>
       <button
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 rounded-xl border border-default-200 bg-white px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+        className="flex w-full items-center justify-between gap-3 rounded-xl border border-default-200 bg-surface px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
         onClick={() => setOpen((value) => !value)}
         type="button"
       >
@@ -57,7 +57,7 @@ export function GuideSwitcher({ project, currentSlug }: GuideSwitcherProps) {
       {open && (
         <nav
           aria-label="Guides in this project"
-          className="mt-2 rounded-xl border border-default-200 bg-white p-2"
+          className="mt-2 rounded-xl border border-default-200 bg-surface p-2"
         >
           <ol className="flex flex-col gap-0.5">
             {items.map((item) => (

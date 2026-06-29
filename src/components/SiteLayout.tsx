@@ -7,6 +7,7 @@ import { useSiteHeaderHeight } from "../hooks/useSiteHeaderHeight";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { GuideSwitcher } from "./guide-nav/GuideSwitcher";
 import { ProjectProgressBar } from "./ProjectProgressBar";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface SiteLayoutProps {
   children?: React.ReactNode;
@@ -24,15 +25,25 @@ export function SiteLayout({ children }: SiteLayoutProps) {
     <div className="flex min-h-screen flex-col">
       <header
         ref={headerRef}
-        className="sticky top-0 z-40 border-b border-default-200 bg-white/95 backdrop-blur"
+        className="sticky top-0 z-40 border-b border-default-200 bg-background/95 backdrop-blur"
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
           <RouterLink
-            className="flex shrink-0 flex-row gap-4 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+            className="flex shrink-0 items-center gap-4 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
             to="/"
           >
-            <img src="/full-logo-purple.png" alt="OpenPaw Labs" className="h-4 sm:h-6" />
-            <span className="h-auto text-base font-bold tracking-tight text-default-950 sm:text-lg">
+            <img
+              src="/full-logo-purple.png"
+              alt="OpenPaw Labs"
+              className="block h-4 w-auto sm:h-6 dark:hidden"
+            />
+            <img
+              src="/full-logo-white.png"
+              alt=""
+              aria-hidden
+              className="hidden h-4 w-auto sm:h-6 dark:block"
+            />
+            <span className="hidden text-base font-bold leading-none tracking-tight text-default-950 sm:inline sm:text-lg">
               DIY Guides
             </span>
           </RouterLink>
@@ -45,13 +56,14 @@ export function SiteLayout({ children }: SiteLayoutProps) {
               Projects
             </RouterLink>
             <Link
-              className="text-sm font-medium"
+              className="hidden sm:inline-block text-sm font-medium"
               href="https://github.com/OpenPawLabs/diy-guides"
               rel="noreferrer"
               target="_blank"
             >
               GitHub
             </Link>
+            <ThemeToggle />
           </nav>
         </div>
 
@@ -99,7 +111,7 @@ export function SiteLayout({ children }: SiteLayoutProps) {
 
       <div className="flex-1">{children ?? <Outlet />}</div>
 
-      <footer className="mt-4 border-t border-default-200 bg-white">
+      <footer className="mt-4 border-t border-default-200 bg-background">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-default-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <p className="max-w-prose">
             Open-source DIY guides for makers, built by{" "}

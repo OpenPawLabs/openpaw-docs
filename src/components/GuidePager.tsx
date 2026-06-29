@@ -40,7 +40,7 @@ function PagerLink({
   return (
     <RouterLink
       className={cn(
-        "group flex flex-1 items-center gap-3 rounded-xl border border-default-200 bg-white p-4 outline-none transition-colors hover:border-primary-300 hover:bg-primary-50 focus-visible:ring-2 focus-visible:ring-primary-300",
+        "group flex flex-1 items-center gap-3 rounded-xl border border-default-200 bg-surface p-4 outline-none transition-colors hover:border-primary-300 hover:bg-primary-50 focus-visible:ring-2 focus-visible:ring-primary-300",
         isPrev ? "text-left" : "flex-row-reverse text-right",
       )}
       to={`/projects/${projectId}/${link.slug}`}

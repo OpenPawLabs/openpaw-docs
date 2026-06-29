@@ -12,6 +12,20 @@
         }
       })();
     </script>
+    <script>
+      // Apply stored theme before paint to avoid a flash (matches HeroUI useTheme).
+      (function () {
+        var theme = localStorage.getItem("heroui-theme") || "system";
+        var resolved = theme;
+        if (theme === "system") {
+          resolved = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+        document.documentElement.classList.add(resolved);
+        document.documentElement.setAttribute("data-theme", resolved);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
