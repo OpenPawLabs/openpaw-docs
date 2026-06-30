@@ -1,8 +1,9 @@
 import { cn } from "@heroui/react";
 import { guideStepUrlId } from "@openpawlabs/diy-guides-ui";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import type { GuideStepMetadata } from "../../catalog/types";
+import { scrollWithinContainer } from "../../utils/scrollWithinContainer";
 import { GuideNavStepMarker } from "./GuideNavStepMarker";
 
 interface GuideNavStepListProps {
@@ -10,6 +11,8 @@ interface GuideNavStepListProps {
   href: string;
   activeStep: number | null;
   stepCompletion: Record<number, boolean>;
+  /** Scrollable sidebar shell — active step scroll is confined here, not the page. */
+  scrollContainerRef?: RefObject<HTMLElement | null>;
 }
 
 export function GuideNavStepList({
@@ -17,12 +20,20 @@ export function GuideNavStepList({
   href,
   activeStep,
   stepCompletion,
+  scrollContainerRef,
 }: GuideNavStepListProps) {
   const activeLinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    activeLinkRef.current?.scrollIntoView({ block: "nearest" });
-  }, [activeStep]);
+    const link = activeLinkRef.current;
+    const container = scrollContainerRef?.current;
+
+    if (link == null || container == null || activeStep == null) {
+      return;
+    }
+
+    scrollWithinContainer(link, container);
+  }, [activeStep, scrollContainerRef]);
 
   if (steps.length === 0) {
     return null;

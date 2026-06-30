@@ -1,4 +1,5 @@
 import { Accordion, cn, Separator } from "@heroui/react";
+import type { RefObject } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import type { ProjectEntry } from "../../catalog/types";
 import { useGuideReader } from "../../context/GuideReaderContext";
@@ -12,6 +13,7 @@ interface GuideSidebarNavProps {
   project: ProjectEntry;
   currentSlug: string;
   className?: string;
+  scrollContainerRef?: RefObject<HTMLElement | null>;
 }
 
 /** Desktop sticky aside: accordion of subguides with step links for the active guide. */
@@ -19,6 +21,7 @@ export function GuideSidebarNav({
   project,
   currentSlug,
   className,
+  scrollContainerRef,
 }: GuideSidebarNavProps) {
   const items = useGuideNavItems(project, currentSlug);
   const scrollToGuideOverview = useScrollToGuideOverview();
@@ -97,6 +100,7 @@ export function GuideSidebarNav({
                   <GuideNavStepList
                     activeStep={activeStep}
                     href={item.href}
+                    scrollContainerRef={scrollContainerRef}
                     stepCompletion={stepCompletion}
                     steps={item.steps}
                   />

@@ -91,7 +91,7 @@ export function GuidePager({ project, currentSlug }: GuidePagerProps) {
         )}
       </div>
 
-      <div className="text-center text-sm">
+      <div className="text-center text-sm pb-4">
         {isLast && (
           <p className="mb-2 font-medium text-default-700">
             That's the last guide in this project. Nice work!
