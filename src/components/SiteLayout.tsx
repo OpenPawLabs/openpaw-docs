@@ -18,10 +18,12 @@ interface SiteLayoutProps {
 export function SiteLayout({ children }: SiteLayoutProps) {
   const { projectId, guideSlug } = useParams();
   const breadcrumbs = usePageBreadcrumbs();
-  const headerRef = useSiteHeaderHeight();
-  const isMdUp = useMediaQuery("(min-width: 768px)");
   const project = projectId ? getProject(projectId) : undefined;
   const showProjectProgress = project && !guideSlug;
+  const isMdUp = useMediaQuery("(min-width: 768px)");
+  const headerRef = useSiteHeaderHeight(
+    `${projectId ?? ""}:${guideSlug ?? ""}:${showProjectProgress}:${isMdUp}`,
+  );
   const guideReaderShell = (content: ReactNode) =>
     projectId && guideSlug ? (
       <GuideReaderProvider guideSlug={guideSlug} projectId={projectId}>
@@ -106,7 +108,7 @@ export function SiteLayout({ children }: SiteLayoutProps) {
         <>
           <div
             aria-live="polite"
-            className="pointer-events-none fixed inset-x-0 z-30"
+            className="pointer-events-none fixed inset-x-0 z-50"
             style={{ top: "var(--site-header-height)" }}
           >
             <div className="mx-auto flex max-w-7xl justify-end px-4 pt-3 sm:px-6">

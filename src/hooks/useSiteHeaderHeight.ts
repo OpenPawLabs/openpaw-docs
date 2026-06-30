@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 /** Keeps `--site-header-height` in sync with the measured sticky header. */
-export function useSiteHeaderHeight() {
+export function useSiteHeaderHeight(remountKey = "") {
   const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -11,22 +11,30 @@ export function useSiteHeaderHeight() {
     }
 
     const update = () => {
+      const height = element.offsetHeight;
+      if (height <= 0) {
+        return;
+      }
+
       document.documentElement.style.setProperty(
         "--site-header-height",
-        `${element.offsetHeight}px`,
+        `${Math.round(height)}px`,
       );
     };
 
     update();
+    const raf = requestAnimationFrame(update);
 
-    const observer = new ResizeObserver(update);
+    const observer = new ResizeObserver(() => {
+      requestAnimationFrame(update);
+    });
     observer.observe(element);
 
     return () => {
+      cancelAnimationFrame(raf);
       observer.disconnect();
-      document.documentElement.style.removeProperty("--site-header-height");
     };
-  }, []);
+  }, [remountKey]);
 
   return headerRef;
 }

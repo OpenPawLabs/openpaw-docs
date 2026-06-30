@@ -10,16 +10,18 @@ interface ProjectProgressBarProps {
 
 /** Project-wide guide completion summary for collection pages. */
 export function ProjectProgressBar({ project, variant }: ProjectProgressBarProps) {
-  const { completedGuides, totalGuides, firstIncompleteSlug } =
+  const { completedGuides, totalGuides, firstIncompleteSlug, statusBySlug } =
     useProjectProgress(project);
 
+  const hasAnyProgress = Object.values(statusBySlug).some(
+    (status) => status !== "not-started",
+  );
   const resumeSlug = firstIncompleteSlug ?? project.subguides[0]?.slug;
-  const resumeLabel =
-    completedGuides === 0
-      ? "Start project"
-      : firstIncompleteSlug
-        ? "Resume project"
-        : "Review project";
+  const resumeLabel = !hasAnyProgress
+    ? "Start project"
+    : firstIncompleteSlug
+      ? "Resume project"
+      : "Review project";
 
   const resumeLink = resumeSlug ? (
     <RouterLink

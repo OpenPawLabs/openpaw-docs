@@ -35,7 +35,9 @@ export function useProjectProgress(project: ProjectEntry): ProjectProgress {
       const progress = getProgressSnapshot(project.id, subguide.slug);
       const status = deriveSubguideStatus(progress);
       statusBySlug[subguide.slug] = status;
-      keyParts.push(`${subguide.slug}:${status}`);
+      keyParts.push(
+        `${subguide.slug}:${status}:${progress?.completed ?? 0}/${progress?.total ?? 0}`,
+      );
 
       if (status === "complete") {
         completedGuides += 1;
