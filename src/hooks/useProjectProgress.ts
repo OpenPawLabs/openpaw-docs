@@ -19,7 +19,7 @@ export interface ProjectProgress {
 
 /**
  * Aggregates per-subguide completion across a project from the progress store.
- * Read-only: progress is written by the guide reader (Phase 2 owns deeper restore).
+ * Read-only: progress is written by the guide reader via `GuideReaderProvider`.
  * Uses guides-complete fraction so it stays accurate before every guide is opened.
  */
 export function useProjectProgress(project: ProjectEntry): ProjectProgress {

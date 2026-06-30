@@ -15,7 +15,7 @@ function renderSidebar(currentSlug: string, initialEntry?: string) {
 
   return render(
     <MemoryRouter initialEntries={[entry]}>
-      <GuideReaderProvider key={currentSlug}>
+      <GuideReaderProvider guideSlug={currentSlug} projectId="bb-lsm6dsv">
         <GuideSidebarNav currentSlug={currentSlug} project={project} />
       </GuideReaderProvider>
     </MemoryRouter>,
@@ -92,7 +92,9 @@ describe("GuideSwitcher", () => {
   it("opens the guide list and calls onNavigate when a link is chosen", () => {
     render(
       <MemoryRouter>
-        <GuideSwitcher currentSlug="0-overview" project={project} />
+        <GuideReaderProvider guideSlug="0-overview" projectId="bb-lsm6dsv">
+          <GuideSwitcher currentSlug="0-overview" project={project} />
+        </GuideReaderProvider>
       </MemoryRouter>,
     );
 

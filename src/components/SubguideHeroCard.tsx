@@ -4,7 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 import type { SubguideEntry } from "../catalog/types";
 import { useGuideProgress } from "../hooks/useGuideProgress";
 import { getGuideMetadata, resolveHeroImage } from "../lib/guides/metadata";
-import { statusLabel } from "../lib/progress/storage";
+import { getFirstIncompleteStep, statusLabel } from "../lib/progress/storage";
 import { HeroImage } from "./HeroImage";
 
 interface SubguideHeroCardProps {
@@ -21,7 +21,7 @@ const statusColor = {
 
 const ctaLabel = {
   "not-started": "Start guide",
-  "in-progress": "Continue",
+  "in-progress": "Continue where you left off",
   complete: "Review",
 } as const;
 
@@ -30,11 +30,16 @@ export function SubguideHeroCard({ projectId, subguide }: SubguideHeroCardProps)
   const hero = resolveHeroImage(subguide.path, metadata);
   const { status, progress } = useGuideProgress(projectId, subguide.slug);
   const title = metadata?.title ?? subguide.title;
+  const resumeStep = getFirstIncompleteStep(progress, metadata?.steps?.length);
+  const guideHref =
+    status === "in-progress" && resumeStep != null
+      ? `/projects/${projectId}/${subguide.slug}#step-${resumeStep}`
+      : `/projects/${projectId}/${subguide.slug}`;
 
   return (
     <RouterLink
       className="group block rounded-large outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
-      to={`/projects/${projectId}/${subguide.slug}`}
+      to={guideHref}
     >
       <Card className="overflow-hidden transition-shadow group-hover:shadow-lg">
         <div className="grid items-center gap-0 grid-cols-[minmax(0,4fr)_minmax(0,6fr)] sm:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] md:grid-cols-[minmax(0,4fr)_minmax(0,6fr)]">

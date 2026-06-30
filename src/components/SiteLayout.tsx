@@ -1,6 +1,8 @@
 import { Link } from "@heroui/react";
+import { type ReactNode } from "react";
 import { Link as RouterLink, Outlet, useParams } from "react-router-dom";
 import { getProject } from "../catalog/projects";
+import { GuideReaderProvider } from "../context/GuideReaderContext";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { usePageBreadcrumbs } from "../hooks/usePageBreadcrumbs";
 import { useSiteHeaderHeight } from "../hooks/useSiteHeaderHeight";
@@ -20,8 +22,16 @@ export function SiteLayout({ children }: SiteLayoutProps) {
   const isMdUp = useMediaQuery("(min-width: 768px)");
   const project = projectId ? getProject(projectId) : undefined;
   const showProjectProgress = project && !guideSlug;
+  const guideReaderShell = (content: ReactNode) =>
+    projectId && guideSlug ? (
+      <GuideReaderProvider guideSlug={guideSlug} projectId={projectId}>
+        {content}
+      </GuideReaderProvider>
+    ) : (
+      content
+    );
 
-  return (
+  return guideReaderShell(
     <div className="flex min-h-screen flex-col">
       <header
         ref={headerRef}
@@ -138,6 +148,6 @@ export function SiteLayout({ children }: SiteLayoutProps) {
           </nav>
         </div>
       </footer>
-    </div>
+    </div>,
   );
 }

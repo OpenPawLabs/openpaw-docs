@@ -1,9 +1,9 @@
-import { type ComponentProps } from "react";
+import { GuideStep } from "@openpawlabs/diy-guides-ui";
+import { Children, isValidElement, type ComponentProps, type ReactNode } from "react";
 
 import { useGuideReader } from "../../context/GuideReaderContext";
 import { useSiteHeaderHeightPx } from "../../hooks/useSiteHeaderHeightPx";
 import { guideComponents } from "./guideComponents";
-import { wrapGuideStepChildren } from "./wrapGuideStepChildren";
 
 const guideProgressRef: {
   current: ((progress: { completed: number; total: number }) => void) | null;
@@ -14,6 +14,18 @@ export function setGuideProgressHandler(
   handler: ((progress: { completed: number; total: number }) => void) | null,
 ) {
   guideProgressRef.current = handler;
+}
+
+function countGuideSteps(children: ReactNode): number {
+  let count = 0;
+
+  Children.forEach(children, (child) => {
+    if (isValidElement(child) && child.type === GuideStep) {
+      count += 1;
+    }
+  });
+
+  return count;
 }
 
 const GuideLayoutWithSiteMargin = Object.assign(
@@ -40,19 +52,25 @@ const GuideLayoutWithSiteMargin = Object.assign(
 function GuideStepListWithReader(
   props: ComponentProps<typeof guideComponents.GuideStepList>,
 ) {
-  const { setActiveStep, setStepCompleted } = useGuideReader();
+  const { setActiveStep, setCompletedSteps, stepCompletion } = useGuideReader();
+  const totalSteps = countGuideSteps(props.children);
 
   return (
     <guideComponents.GuideStepList
       {...props}
+      activeStepMinVisibleRatio={0.2}
+      completedSteps={stepCompletion}
       onActiveStepChange={setActiveStep}
+      onCompletedStepsChange={(steps) => {
+        setCompletedSteps(steps, totalSteps);
+      }}
       showProgress={false}
       onProgressChange={(progress) => {
         guideProgressRef.current?.(progress);
         props.onProgressChange?.(progress);
       }}
     >
-      {wrapGuideStepChildren(props.children, setStepCompleted)}
+      {props.children}
     </guideComponents.GuideStepList>
   );
 }

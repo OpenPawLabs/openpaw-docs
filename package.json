@@ -1,6 +1,6 @@
 {
   "name": "openpaw-docs",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "description": "Documentation website for OpenPaw Labs DIY guide collections.",
@@ -22,7 +22,7 @@
     "@heroui/react": "^3.2.1",
     "@heroui/styles": "^3.2.1",
     "@mdx-js/mdx": "^3.1.1",
-    "@openpawlabs/diy-guides-ui": "^1.7.1",
+    "@openpawlabs/diy-guides-ui": "^1.7.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0",

@@ -1,9 +1,10 @@
-import { cn } from "@heroui/react";
+import { cn, Separator } from "@heroui/react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import type { ProjectEntry } from "../../catalog/types";
 import { useScrollToGuideOverview } from "../../hooks/useScrollToGuideOverview";
 import { GuideNavStatusMarker } from "./GuideNavStatusMarker";
+import { GuideResetButton } from "./GuideResetButton";
 import { useGuideNavItems } from "./useGuideNavItems";
 
 interface GuideSwitcherProps {
@@ -100,6 +101,13 @@ export function GuideSwitcher({ project, currentSlug }: GuideSwitcherProps) {
               </li>
             ))}
           </ol>
+
+          <Separator />
+
+          <GuideResetButton
+            className="mt-2 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-danger outline-none transition-colors hover:bg-danger-50 focus-visible:ring-2 focus-visible:ring-danger-300"
+            project={project}
+          />
         </nav>
       )}
     </div>

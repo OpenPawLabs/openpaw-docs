@@ -1,10 +1,11 @@
-import { Accordion, cn } from "@heroui/react";
+import { Accordion, cn, Separator } from "@heroui/react";
 import { Link as RouterLink } from "react-router-dom";
 import type { ProjectEntry } from "../../catalog/types";
 import { useGuideReader } from "../../context/GuideReaderContext";
 import { useScrollToGuideOverview } from "../../hooks/useScrollToGuideOverview";
 import { GuideNavStatusMarker } from "./GuideNavStatusMarker";
 import { GuideNavStepList } from "./GuideNavStepList";
+import { GuideResetButton } from "./GuideResetButton";
 import { useGuideNavItems } from "./useGuideNavItems";
 
 interface GuideSidebarNavProps {
@@ -63,7 +64,6 @@ export function GuideSidebarNav({
                       </span>
                     )}
                   </span>
-                  <Accordion.Indicator className="mt-1 shrink-0" />
                 </RouterLink>
               ) : (
                 <RouterLink
@@ -106,6 +106,13 @@ export function GuideSidebarNav({
           </Accordion.Item>
         ))}
       </Accordion>
+
+      <Separator className="mt-4" />
+
+      <GuideResetButton
+        className="mt-4 w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-danger outline-none transition-colors hover:bg-danger-50 focus-visible:ring-2 focus-visible:ring-danger-300"
+        project={project}
+      />
     </nav>
   );
 }

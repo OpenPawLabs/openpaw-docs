@@ -46,4 +46,6 @@ export type GuidesMetadataMap = Record<string, GuideMetadata>;
 export interface GuideProgressRecord {
   completed: number;
   total: number;
+  /** Per-step completion keyed by step number (stored as string keys in JSON). */
+  steps?: Record<string, boolean>;
 }
