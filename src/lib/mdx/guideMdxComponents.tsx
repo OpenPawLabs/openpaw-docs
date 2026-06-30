@@ -46,6 +46,7 @@ function GuideStepListWithReader(
     <guideComponents.GuideStepList
       {...props}
       onActiveStepChange={setActiveStep}
+      showProgress={false}
       onProgressChange={(progress) => {
         guideProgressRef.current?.(progress);
         props.onProgressChange?.(progress);
