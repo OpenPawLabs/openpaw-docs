@@ -4,41 +4,89 @@
     "difficulty": "easy",
     "timeEstimate": "30 minutes",
     "meta": "Draft",
-    "heroImage": "./images/trackers-with-dock-wip-1.png"
+    "heroImage": "./images/trackers-with-dock-wip-1.png",
+    "steps": [
+      {
+        "title": "First step in the guide"
+      },
+      {
+        "title": "Second step in the guide"
+      },
+      {
+        "title": "Describe the next step"
+      },
+      {
+        "title": "Describe the next step"
+      },
+      {
+        "title": "Describe the next step"
+      },
+      {
+        "title": "Describe the next step"
+      }
+    ]
   },
   "bb-lsm6dsv/1-3d-prints": {
     "title": "3D Print Parts",
     "difficulty": "easy",
     "timeEstimate": "6 Hours (Printing)",
     "meta": "Draft",
-    "heroImage": "./images/3d-printer-2.jpg"
+    "heroImage": "./images/3d-printer-2.jpg",
+    "steps": [
+      {
+        "title": "Tracker Case Body (2 hours)"
+      },
+      {
+        "title": "Tracker Lids/Labels"
+      }
+    ]
   },
   "bb-lsm6dsv/2-tracker-assembly": {
     "title": "Tracker Assembly",
     "difficulty": "easy",
     "timeEstimate": "30 minutes",
     "meta": "Draft",
-    "heroImage": "./images/trackers-with-dock-wip.png"
+    "heroImage": "./images/trackers-with-dock-wip.png",
+    "steps": [
+      {
+        "title": "Describe the first step"
+      }
+    ]
   },
   "bb-lsm6dsv/3-strap-assembly": {
     "title": "Strap Assembly",
     "difficulty": "easy",
     "timeEstimate": "30 minutes",
     "meta": "Draft",
-    "heroImage": "./images/8-case-3dfile-screenshot.jpg"
+    "heroImage": "./images/8-case-3dfile-screenshot.jpg",
+    "steps": [
+      {
+        "title": "Describe the first step"
+      }
+    ]
   },
   "common/0-onetime-tracker-setup": {
     "title": "One-time Setup",
     "difficulty": "easy",
     "timeEstimate": "30 minutes",
     "meta": "Draft",
-    "heroImage": "./images/8-case-3dfile-screenshot.jpg"
+    "heroImage": "./images/8-case-3dfile-screenshot.jpg",
+    "steps": [
+      {
+        "title": "Describe the first step"
+      }
+    ]
   },
   "common/1-vrchat-use": {
     "title": "Daily VR Use!",
     "difficulty": "easy",
     "timeEstimate": "30 minutes",
     "meta": "Draft",
-    "heroImage": "./images/8-case-3dfile-screenshot.jpg"
+    "heroImage": "./images/8-case-3dfile-screenshot.jpg",
+    "steps": [
+      {
+        "title": "Describe the first step"
+      }
+    ]
   }
 }

@@ -33,7 +33,15 @@ export interface GuideHeaderMetadata {
   heroImageAlt?: string;
 }
 
-export type GuidesMetadataMap = Record<string, GuideHeaderMetadata>;
+export interface GuideStepMetadata {
+  title?: string;
+}
+
+export interface GuideMetadata extends GuideHeaderMetadata {
+  steps?: GuideStepMetadata[];
+}
+
+export type GuidesMetadataMap = Record<string, GuideMetadata>;
 
 export interface GuideProgressRecord {
   completed: number;

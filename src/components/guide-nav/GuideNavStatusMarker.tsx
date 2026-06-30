@@ -37,7 +37,7 @@ export function GuideNavStatusMarker({
       className={cn(
         "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
         isCurrent
-          ? "bg-primary text-white"
+          ? "bg-primary"
           : status === "in-progress"
             ? "bg-warning-100 text-warning-700 ring-1 ring-warning-400"
             : "bg-default-100 text-default-500",

@@ -2,6 +2,7 @@ import { cn } from "@heroui/react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import type { ProjectEntry } from "../../catalog/types";
+import { useScrollToGuideOverview } from "../../hooks/useScrollToGuideOverview";
 import { GuideNavStatusMarker } from "./GuideNavStatusMarker";
 import { useGuideNavItems } from "./useGuideNavItems";
 
@@ -33,6 +34,7 @@ function ChevronIcon({ open }: { open: boolean }) {
 export function GuideSwitcher({ project, currentSlug }: GuideSwitcherProps) {
   const [open, setOpen] = useState(false);
   const items = useGuideNavItems(project, currentSlug);
+  const scrollToGuideOverview = useScrollToGuideOverview();
   const current = items.find((item) => item.isCurrent);
 
   return (
@@ -70,7 +72,13 @@ export function GuideSwitcher({ project, currentSlug }: GuideSwitcherProps) {
                       ? "bg-primary-50 text-default-950"
                       : "text-default-600 hover:bg-default-100 hover:text-default-900",
                   )}
-                  onClick={() => setOpen(false)}
+                  onClick={(event) => {
+                    if (item.isCurrent) {
+                      event.preventDefault();
+                      scrollToGuideOverview(item.href);
+                    }
+                    setOpen(false);
+                  }}
                   to={item.href}
                 >
                   <GuideNavStatusMarker

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import type { ProjectEntry, SubguideStatus } from "../../catalog/types";
+import type { GuideStepMetadata, ProjectEntry, SubguideStatus } from "../../catalog/types";
 import { useProjectProgress } from "../../hooks/useProjectProgress";
+import { getGuideSteps } from "../../lib/guides/metadata";
 import { subguideTitle } from "../../lib/guides/navigation";
 
 export interface GuideNavItem {
@@ -12,6 +13,7 @@ export interface GuideNavItem {
   isCurrent: boolean;
   optional?: boolean;
   shared?: boolean;
+  steps: GuideStepMetadata[];
 }
 
 export function useGuideNavItems(
@@ -31,6 +33,7 @@ export function useGuideNavItems(
         isCurrent: subguide.slug === currentSlug,
         optional: subguide.optional,
         shared: subguide.shared,
+        steps: getGuideSteps(subguide.path),
       })),
     [project, currentSlug, statusBySlug],
   );

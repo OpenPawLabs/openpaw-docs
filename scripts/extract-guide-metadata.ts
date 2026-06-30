@@ -1,8 +1,9 @@
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { GuideHeaderMetadata } from "../src/catalog/types";
+import type { GuideMetadata } from "../src/catalog/types";
 import { parseGuideHeader } from "../src/lib/guides/parseGuideHeader";
+import { parseGuideSteps } from "../src/lib/guides/parseGuideSteps";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
@@ -11,7 +12,7 @@ const outputPath = join(rootDir, "src/guides-metadata.json");
 
 function walkGuides(
   directory: string,
-  metadata: Record<string, GuideHeaderMetadata>,
+  metadata: Record<string, GuideMetadata>,
   prefix = "",
 ) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
@@ -29,9 +30,15 @@ function walkGuides(
 
     const source = readFileSync(absolutePath, "utf8");
     const header = parseGuideHeader(source);
-    if (header) {
-      metadata[relativePath.replace(/\/guide\.mdx$/, "")] = header;
+    if (!header) {
+      continue;
     }
+
+    const steps = parseGuideSteps(source);
+    metadata[relativePath.replace(/\/guide\.mdx$/, "")] = {
+      ...header,
+      ...(steps.length > 0 ? { steps } : {}),
+    };
   }
 }
 
@@ -41,7 +48,7 @@ function main() {
     process.exit(1);
   }
 
-  const metadata: Record<string, GuideHeaderMetadata> = {};
+  const metadata: Record<string, GuideMetadata> = {};
   walkGuides(guidesDir, metadata);
 
   writeFileSync(outputPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf8");
