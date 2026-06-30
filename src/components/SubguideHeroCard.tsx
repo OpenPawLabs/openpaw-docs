@@ -25,7 +25,7 @@ const ctaLabel = {
   complete: "Review",
 } as const;
 
-export function SubguideHeroCard({ projectId, subguide, index }: SubguideHeroCardProps) {
+export function SubguideHeroCard({ projectId, subguide }: SubguideHeroCardProps) {
   const metadata = getGuideMetadata(subguide.path);
   const hero = resolveHeroImage(subguide.path, metadata);
   const { status, progress } = useGuideProgress(projectId, subguide.slug);

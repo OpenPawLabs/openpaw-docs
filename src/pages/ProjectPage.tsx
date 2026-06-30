@@ -1,4 +1,4 @@
-import { Alert, ProgressBar } from "@heroui/react";
+import { Alert } from "@heroui/react";
 
 import { Link as RouterLink, useParams } from "react-router-dom";
 
