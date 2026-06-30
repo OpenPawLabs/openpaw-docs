@@ -2,6 +2,8 @@ import { Alert, ProgressBar } from "@heroui/react";
 import { Link as RouterLink } from "react-router-dom";
 import type { ProjectEntry } from "../catalog/types";
 import { useProjectProgress } from "../hooks/useProjectProgress";
+import { getGuideMetadata } from "../lib/guides/metadata";
+import { getFirstIncompleteStep, getProgressSnapshot } from "../lib/progress/storage";
 
 interface ProjectProgressBarProps {
   project: ProjectEntry;
@@ -17,20 +19,40 @@ export function ProjectProgressBar({ project, variant }: ProjectProgressBarProps
     (status) => status !== "not-started",
   );
   const resumeSlug = firstIncompleteSlug ?? project.subguides[0]?.slug;
+  const resumeSubguide = resumeSlug
+    ? project.subguides.find((subguide) => subguide.slug === resumeSlug)
+    : undefined;
+  const resumeStatus = resumeSlug ? statusBySlug[resumeSlug] : undefined;
+  const resumeProgress = resumeSlug
+    ? getProgressSnapshot(project.id, resumeSlug)
+    : null;
+  const resumeMetadata = resumeSubguide
+    ? getGuideMetadata(resumeSubguide.path)
+    : undefined;
+  const resumeStep = getFirstIncompleteStep(
+    resumeProgress,
+    resumeMetadata?.steps?.length,
+  );
+  const resumeHref =
+    resumeSlug && resumeStatus === "in-progress" && resumeStep != null
+      ? `/projects/${project.id}/${resumeSlug}#step-${resumeStep}`
+      : resumeSlug
+        ? `/projects/${project.id}/${resumeSlug}`
+        : undefined;
   const resumeLabel = !hasAnyProgress
     ? "Start project"
     : firstIncompleteSlug
       ? "Resume project"
       : "Review project";
 
-  const resumeLink = resumeSlug ? (
+  const resumeLink = resumeHref ? (
     <RouterLink
       className={
         variant === "floating"
           ? "inline-flex w-full items-center justify-center gap-1 rounded-large bg-primary px-5 py-2 text-sm font-semibold outline-none transition-colors hover:bg-primary-600 focus-visible:ring-2 focus-visible:ring-primary-300"
           : "hidden sm:inline-flex shrink-0 items-center justify-center gap-1 rounded-large bg-primary px-5 py-2.5 text-sm font-semibold outline-none transition-colors hover:bg-primary-600 focus-visible:ring-2 focus-visible:ring-primary-300"
       }
-      to={`/projects/${project.id}/${resumeSlug}`}
+      to={resumeHref}
     >
       {resumeLabel}
       <span aria-hidden>→</span>
