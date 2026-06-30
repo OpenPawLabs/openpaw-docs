@@ -25,7 +25,7 @@ const GuideLayoutWithSiteMargin = Object.assign(
     return (
       <guideComponents.GuideLayout
         {...props}
-        stepScrollMarginTop={siteHeaderHeightPx}
+        scrollMarginTop={siteHeaderHeightPx}
       />
     );
   },

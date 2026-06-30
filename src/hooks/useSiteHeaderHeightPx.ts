@@ -11,7 +11,7 @@ export function useSiteHeaderHeightPx(): number {
     }
 
     const update = () => {
-      setHeightPx(header.offsetHeight);
+      setHeightPx(header.offsetHeight + 8); // 8px of extra padding
     };
 
     update();
