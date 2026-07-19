@@ -24,7 +24,7 @@ describe("getGuideNavigation", () => {
   it("links both neighbours for a middle guide", () => {
     const nav = getGuideNavigation(project, "2-tracker-assembly");
     expect(nav?.prev?.slug).toBe("1-3d-prints");
-    expect(nav?.next?.slug).toBe("3-strap-assembly");
+    expect(nav?.next?.slug).toBe("3-dock-assembly");
   });
 
   it("uses authored metadata titles for neighbours", () => {
@@ -40,7 +40,17 @@ describe("getGuideNavigation", () => {
 describe("subguideTitle", () => {
   it("prefers authored metadata title over catalog fallback", () => {
     const subguide = project.subguides.find((entry) => entry.slug === "0-overview")!;
-    expect(subguideTitle(subguide)).toBe("Overview Guide");
-    expect(subguide.title).toBe("Overview");
+    expect(subguideTitle(subguide)).toBe("Project Overview");
+    expect(subguide.title).toBeUndefined();
+  });
+
+  it("humanizes the slug when metadata and catalog title are missing", () => {
+    expect(
+      subguideTitle({
+        slug: "4-strap-assembly",
+        path: "bb-lsm6dsv/missing-guide",
+        description: "…",
+      }),
+    ).toBe("Strap Assembly");
   });
 });

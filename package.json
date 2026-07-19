@@ -8,8 +8,10 @@
   "scripts": {
     "sync-guides": "node scripts/sync-guides.mjs",
     "extract-metadata": "tsx scripts/extract-guide-metadata.ts",
-    "predev": "pnpm sync-guides && pnpm extract-metadata",
-    "prebuild": "pnpm sync-guides && pnpm extract-metadata",
+    "generate-catalog": "tsx scripts/generate-catalog.ts",
+    "predev": "pnpm sync-guides && pnpm extract-metadata && pnpm generate-catalog",
+    "prebuild": "pnpm sync-guides && pnpm extract-metadata && pnpm generate-catalog",
+    "pretest": "pnpm predev",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",

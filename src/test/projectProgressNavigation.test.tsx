@@ -2,7 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
 import { AppRoutes } from "../App";
+import { getProject } from "../catalog/projects";
 import { writeGuideStepCompletion } from "../lib/progress/storage";
+
+const project = getProject("bb-lsm6dsv")!;
 
 describe("project progress on navigation", () => {
   beforeEach(() => {
@@ -19,7 +22,7 @@ describe("project progress on navigation", () => {
     );
 
     expect(screen.getByRole("progressbar", { name: "Project progress" })).toBeInTheDocument();
-    expect(screen.getByText("1 / 6 guides")).toBeInTheDocument();
+    expect(screen.getByText(`1 / ${project.subguides.length} guides`)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Resume project/i })).toBeInTheDocument();
   });
 
@@ -33,7 +36,7 @@ describe("project progress on navigation", () => {
     );
 
     expect(screen.getByRole("progressbar", { name: "Project progress" })).toBeInTheDocument();
-    expect(screen.getByText("0 / 6 guides")).toBeInTheDocument();
+    expect(screen.getByText(`0 / ${project.subguides.length} guides`)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Resume project/i })).toBeInTheDocument();
     expect(screen.getByText("In progress")).toBeInTheDocument();
   });

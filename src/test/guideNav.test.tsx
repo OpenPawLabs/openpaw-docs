@@ -33,7 +33,9 @@ describe("GuideSidebarNav", () => {
     const nav = screen.getByRole("navigation", { name: "Guides in this project" });
     expect(nav).toBeInTheDocument();
 
-    const subguideLinks = screen.getAllByRole("link", { name: /Overview|3D Print|Tracker Assembly|Strap Assembly|One-time Setup|Daily VR/i });
+    const subguideLinks = screen.getAllByRole("link", {
+      name: /Project Overview|3D Print|Tracker Assembly|Dock Assembly|Strap Assembly|One-time Setup|Daily VR/i,
+    });
     expect(subguideLinks).toHaveLength(project.subguides.length);
 
     expect(screen.getByRole("link", { name: /Tracker Assembly/i })).toHaveAttribute(
@@ -45,25 +47,25 @@ describe("GuideSidebarNav", () => {
   it("links the active subguide without a step hash", () => {
     renderSidebar("0-overview", "/projects/bb-lsm6dsv/0-overview#step-2");
 
-    const overviewLink = screen.getByRole("link", { name: /Overview Guide/i });
+    const overviewLink = screen.getByRole("link", { name: /Project Overview/i });
     expect(overviewLink).toHaveAttribute("href", "/projects/bb-lsm6dsv/0-overview");
   });
 
   it("shows step links for the current subguide with hash hrefs", () => {
     renderSidebar("0-overview");
 
-    const firstStep = screen.getByRole("link", { name: /First step in the guide/i });
+    const firstStep = screen.getByRole("link", { name: /Gather Tools/i });
     expect(firstStep).toHaveAttribute("href", "/projects/bb-lsm6dsv/0-overview#step-1");
 
-    const secondStep = screen.getByRole("link", { name: /Second step in the guide/i });
+    const secondStep = screen.getByRole("link", { name: /Gather Boards & Batteries/i });
     expect(secondStep).toHaveAttribute("href", "/projects/bb-lsm6dsv/0-overview#step-2");
   });
 
   it("does not show step links for non-current subguides", () => {
     renderSidebar("2-tracker-assembly");
 
-    expect(screen.queryByRole("link", { name: /First step in the guide/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /Second step in the guide/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Gather Tools/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Gather Boards & Batteries/i })).not.toBeInTheDocument();
   });
 
   it("shows optional and shared labels", () => {
@@ -98,7 +100,11 @@ describe("GuideSwitcher", () => {
       </MemoryRouter>,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /Guide 1 of 6/i }));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: new RegExp(`Guide 1 of ${project.subguides.length}`, "i"),
+      }),
+    );
 
     const nav = screen.getByRole("navigation", { name: "Guides in this project" });
     expect(nav).toBeInTheDocument();

@@ -1,3 +1,4 @@
+import { humanizeSlug } from "../../catalog/manifest";
 import type { ProjectEntry, SubguideEntry } from "../../catalog/types";
 import { getGuideMetadata } from "./metadata";
 
@@ -17,9 +18,13 @@ export interface GuideNavigation {
   next?: GuideNavLink;
 }
 
-/** Authored title (from MDX metadata) with catalog fallback. */
+/** Authored title (from MDX metadata) with catalog / slug fallback. */
 export function subguideTitle(subguide: SubguideEntry): string {
-  return getGuideMetadata(subguide.path)?.title ?? subguide.title;
+  return (
+    getGuideMetadata(subguide.path)?.title ??
+    subguide.title ??
+    humanizeSlug(subguide.slug)
+  );
 }
 
 function toLink(subguide: SubguideEntry): GuideNavLink {

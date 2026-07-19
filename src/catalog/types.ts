@@ -6,8 +6,8 @@ export interface SubguideEntry {
   slug: string;
   /** Path within diy-guides repo, e.g. `bb-lsm6dsv/0-overview`. */
   path: string;
-  /** Fallback title when metadata is unavailable. */
-  title: string;
+  /** Optional fallback title when MDX metadata is unavailable. */
+  title?: string;
   description: string;
   /** Shared guides live under `common/` and may appear in multiple projects. */
   shared?: boolean;

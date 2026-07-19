@@ -23,7 +23,7 @@ describe("GuidePager", () => {
     );
     expect(screen.getByRole("link", { name: /Next/i })).toHaveAttribute(
       "href",
-      "/projects/bb-lsm6dsv/3-strap-assembly",
+      "/projects/bb-lsm6dsv/3-dock-assembly",
     );
     expect(screen.getByRole("link", { name: "Back to all guides" })).toHaveAttribute(
       "href",

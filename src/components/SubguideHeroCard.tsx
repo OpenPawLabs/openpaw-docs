@@ -1,6 +1,7 @@
 import { Card, Chip } from "@heroui/react";
 import { DifficultyBadge } from "@openpawlabs/diy-guides-ui";
 import { Link as RouterLink } from "react-router-dom";
+import { humanizeSlug } from "../catalog/manifest";
 import type { SubguideEntry } from "../catalog/types";
 import { useGuideProgress } from "../hooks/useGuideProgress";
 import { getGuideMetadata, resolveHeroImage } from "../lib/guides/metadata";
@@ -29,7 +30,7 @@ export function SubguideHeroCard({ projectId, subguide }: SubguideHeroCardProps)
   const metadata = getGuideMetadata(subguide.path);
   const hero = resolveHeroImage(subguide.path, metadata);
   const { status, progress } = useGuideProgress(projectId, subguide.slug);
-  const title = metadata?.title ?? subguide.title;
+  const title = metadata?.title ?? subguide.title ?? humanizeSlug(subguide.slug);
   const resumeStep = getFirstIncompleteStep(progress, metadata?.steps?.length);
   const guideHref =
     status === "in-progress" && resumeStep != null
