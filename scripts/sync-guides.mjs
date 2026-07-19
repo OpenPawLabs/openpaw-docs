@@ -1,5 +1,5 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -10,14 +10,26 @@ const destDir = join(rootDir, "public/guides");
 
 const SKIP_NAMES = new Set([".git", "node_modules"]);
 
+/** Build-time AVIF cache — keep across syncs so `generate-images` can skip. */
+function isThumbnailsDir(destination, entryName) {
+  return entryName === "thumbnails" && basename(destination) === "images";
+}
+
+/**
+ * Mirror `source` → `destination`, preserving `images/thumbnails/` so responsive
+ * derivatives survive `pnpm predev` / `prebuild` and can be skipped when fresh.
+ */
 function syncDirectory(source, destination) {
   mkdirSync(destination, { recursive: true });
+
+  const sourceNames = new Set();
 
   for (const entry of readdirSync(source, { withFileTypes: true })) {
     if (SKIP_NAMES.has(entry.name)) {
       continue;
     }
 
+    sourceNames.add(entry.name);
     const from = join(source, entry.name);
     const to = join(destination, entry.name);
 
@@ -27,6 +39,20 @@ function syncDirectory(source, destination) {
     }
 
     cpSync(from, to);
+  }
+
+  if (!existsSync(destination)) {
+    return;
+  }
+
+  for (const entry of readdirSync(destination, { withFileTypes: true })) {
+    if (sourceNames.has(entry.name) || SKIP_NAMES.has(entry.name)) {
+      continue;
+    }
+    if (isThumbnailsDir(destination, entry.name)) {
+      continue;
+    }
+    rmSync(join(destination, entry.name), { recursive: true, force: true });
   }
 }
 
@@ -43,8 +69,19 @@ function main() {
     process.exit(1);
   }
 
-  rmSync(destDir, { recursive: true, force: true });
+  mkdirSync(destDir, { recursive: true });
   syncDirectory(sourceDir, destDir);
+
+  // Drop dest-only top-level project folders (except anything we intentionally keep)
+  const sourceTop = new Set(
+    readdirSync(sourceDir, { withFileTypes: true })
+      .filter((e) => !SKIP_NAMES.has(e.name))
+      .map((e) => e.name),
+  );
+  for (const entry of readdirSync(destDir, { withFileTypes: true })) {
+    if (sourceTop.has(entry.name) || SKIP_NAMES.has(entry.name)) continue;
+    rmSync(join(destDir, entry.name), { recursive: true, force: true });
+  }
 
   const relativeSource = relative(rootDir, sourceDir) || sourceDir;
   console.log(`Synced guides from ${relativeSource} → public/guides/`);

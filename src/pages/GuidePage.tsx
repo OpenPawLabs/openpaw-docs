@@ -1,38 +1,46 @@
 import { Alert, Spinner } from "@heroui/react";
 import {
-
-  useEffect,
-
-  useRef,
-
-  useState,
-
-} from "react";
+  GUIDE_IMAGE_VARIANTS_PATH,
+  GuideImageVariantsProvider,
+  type GuideImageVariantsManifest,
+} from "@openpawlabs/diy-guides-ui";
+import { useEffect, useRef, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { GuideSidebarNav } from "../components/guide-nav/GuideSidebarNav";
 import { GuidePager } from "../components/GuidePager";
 import { getProject, getSubguide } from "../catalog/projects";
 import { useRouterHashChangeBridge } from "../hooks/useRouterHashChangeBridge";
-
 import { guideBaseUrl, guideMdxUrl } from "../lib/guides/metadata";
-
 import { compileGuide, formatMdxError } from "../lib/mdx/compileGuide";
-
 import {
-
   guideMdxComponents,
-
   setGuideProgressHandler,
-
 } from "../lib/mdx/guideMdxComponents";
-
 import type { GuideMdxComponent } from "../lib/mdx/guideComponents";
 import { rewriteAssetUrls } from "../lib/mdx/rewriteAssetUrls";
 
 type LoadState =
   | { status: "loading" }
-  | { status: "ready"; Content: GuideMdxComponent }
+  | {
+      status: "ready";
+      Content: GuideMdxComponent;
+      variants: GuideImageVariantsManifest | null;
+    }
   | { status: "error"; message: string };
+
+async function loadVariantsManifest(
+  base: string,
+): Promise<GuideImageVariantsManifest | null> {
+  try {
+    const response = await fetch(new URL(GUIDE_IMAGE_VARIANTS_PATH, base).href);
+    if (!response.ok) {
+      return null;
+    }
+    return (await response.json()) as GuideImageVariantsManifest;
+  } catch {
+    return null;
+  }
+}
 
 export function GuidePage() {
   const { projectId = "", guideSlug = "" } = useParams();
@@ -62,10 +70,13 @@ export function GuidePage() {
         const source = await response.text();
         const base = guideBaseUrl(guidePath);
         const rewritten = rewriteAssetUrls(source, base);
-        const Content = await compileGuide(rewritten, base);
+        const [Content, variants] = await Promise.all([
+          compileGuide(rewritten, base),
+          loadVariantsManifest(base),
+        ]);
 
         if (!cancelled) {
-          setState({ status: "ready", Content });
+          setState({ status: "ready", Content, variants });
         }
       } catch (error) {
         if (!cancelled) {
@@ -158,7 +169,9 @@ function GuidePageBody({
             </Alert>
           )}
 
-          {state.status === "ready" && <GuideReader Content={state.Content} />}
+          {state.status === "ready" && (
+            <GuideReader Content={state.Content} variants={state.variants} />
+          )}
 
           <GuidePager currentSlug={currentSlug} project={project} />
         </div>
@@ -167,10 +180,17 @@ function GuidePageBody({
   );
 }
 
-function GuideReader({ Content }: { Content: GuideMdxComponent }) {
-
+function GuideReader({
+  Content,
+  variants,
+}: {
+  Content: GuideMdxComponent;
+  variants: GuideImageVariantsManifest | null;
+}) {
   setGuideProgressHandler(null);
-  return <Content components={guideMdxComponents} />;
-
+  return (
+    <GuideImageVariantsProvider manifest={variants}>
+      <Content components={guideMdxComponents} />
+    </GuideImageVariantsProvider>
+  );
 }
-

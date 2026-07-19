@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { cn } from "@heroui/react";
+import { guideImageVariantUrl } from "@openpawlabs/diy-guides-ui";
 
 interface HeroImageProps {
   src?: string;
@@ -11,14 +13,31 @@ interface HeroImageProps {
 /**
  * Fills its (aspect-ratio) container with the hero image, or a branded gradient
  * placeholder bearing the guide's initial when no `heroImage` was authored.
+ * Prefers the build-generated 480w AVIF when present, falling back to the
+ * canonical source on error.
  */
 export function HeroImage({ src, alt, label, className }: HeroImageProps) {
+  const [useCanonical, setUseCanonical] = useState(false);
+
+  useEffect(() => {
+    setUseCanonical(false);
+  }, [src]);
+
   if (src) {
+    const displaySrc =
+      useCanonical || !src ? src : guideImageVariantUrl(src, 800);
     return (
       <img
         alt={alt ?? ""}
         className={cn("size-full object-cover", className)}
-        src={src}
+        src={displaySrc}
+        loading="lazy"
+        decoding="async"
+        onError={() => {
+          if (!useCanonical) {
+            setUseCanonical(true);
+          }
+        }}
       />
     );
   }
