@@ -44,7 +44,7 @@
   "bb-lsm6dsv/2-tracker-assembly": {
     "title": "Tracker Assembly",
     "difficulty": "easy",
-    "timeEstimate": "30 minutes",
+    "timeEstimate": "5 minutes / tracker",
     "meta": "Draft",
     "heroImage": "./images/trackers-with-dock-wip.png",
     "steps": [
@@ -53,7 +53,19 @@
       }
     ]
   },
-  "bb-lsm6dsv/3-strap-assembly": {
+  "bb-lsm6dsv-3-dock-assembly": {
+    "title": "Dock Assembly",
+    "difficulty": "easy",
+    "timeEstimate": "5 minutes",
+    "meta": "Draft",
+    "heroImage": "./images/trackers-with-dock-wip.png",
+    "steps": [
+      {
+        "title": "Describe the first step"
+      }
+    ]
+  },
+  "bb-lsm6dsv/4-strap-assembly": {
     "title": "Strap Assembly",
     "difficulty": "easy",
     "timeEstimate": "30 minutes",
