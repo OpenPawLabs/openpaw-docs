@@ -40,26 +40,32 @@ export function SiteLayout({ children }: SiteLayoutProps) {
         className="sticky top-0 z-40 border-b border-default-200 bg-background/95 backdrop-blur"
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
-          <RouterLink
-            className="flex shrink-0 items-center gap-4 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
-            to="/"
-          >
-            <img
-              src="/full-logo-purple.png"
-              alt="OpenPaw Labs"
-              className="block h-4 w-auto sm:h-6 dark:hidden"
-            />
-            <img
-              src="/full-logo-white.png"
-              alt=""
-              aria-hidden
-              className="hidden h-4 w-auto sm:h-6 dark:block"
-            />
-            <span className="hidden text-base font-bold leading-none tracking-tight text-default-950 sm:inline sm:text-lg">
-              DIY Guides
-            </span>
-          </RouterLink>
-
+          <nav aria-label="Header" className="flex items-center gap-4">          
+            <RouterLink
+              className="flex shrink-0 items-center gap-4 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+              to="https://openpawlabs.com"
+            >
+              <img
+                src="/full-logo-purple.png"
+                alt="OpenPaw Labs"
+                className="block h-4 w-auto sm:h-6 dark:hidden"
+              />
+              <img
+                src="/full-logo-white.png"
+                alt=""
+                aria-hidden
+                className="hidden h-4 w-auto sm:h-6 dark:block"
+              />
+            </RouterLink>
+            <RouterLink
+              className="flex shrink-0 items-center gap-4 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+              to="/"
+            >
+              <span className="hidden text-base font-bold leading-none tracking-tight text-default-950 sm:inline sm:text-lg">
+                DIY Guides
+              </span>
+            </RouterLink>
+          </nav>
           <nav aria-label="Site" className="flex items-center gap-4">
             <RouterLink
               className="rounded text-sm font-medium text-default-600 outline-none hover:text-default-900 focus-visible:ring-2 focus-visible:ring-primary-300"
