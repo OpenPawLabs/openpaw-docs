@@ -67,6 +67,12 @@ export function SiteLayout({ children }: SiteLayoutProps) {
             </RouterLink>
           </nav>
           <nav aria-label="Site" className="flex items-center gap-4">
+          <RouterLink
+              className="rounded text-sm font-medium text-default-600 outline-none hover:text-default-900 focus-visible:ring-2 focus-visible:ring-primary-300"
+              to="https://openpawlabs.com/support"
+            >
+              Support
+            </RouterLink>
             <RouterLink
               className="rounded text-sm font-medium text-default-600 outline-none hover:text-default-900 focus-visible:ring-2 focus-visible:ring-primary-300"
               to="/"
