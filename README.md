@@ -35,7 +35,7 @@ pnpm build
 Before dev and build, scripts copy guide content, generate responsive image variants, extract header metadata, and generate the project catalog:
 
 1. **`pnpm sync-guides`** — copies `../diy-guides` (or `DIY_GUIDES_PATH`) into `public/guides/`
-2. **`pnpm generate-images`** — runs `diy-guide-images` (needs `sharp`) to emit AVIF width variants under `images/thumbnails/` + `variants.json` for each synced guide (skips files that already exist; `sync-guides` preserves that cache across runs)
+2. **`pnpm generate-images`** — runs `diy-guide-images` (needs `sharp`) to emit AVIF width variants under `images/thumbnails/` + `variants.json` for each synced guide (skips when `sourceHash` in the manifest still matches; `sync-guides` preserves that cache across runs)
 3. **`pnpm extract-metadata`** — parses each `guide.mdx` for `GuideLayout.Header` props (`scripts/extract-guide-metadata.ts`) and writes `src/guides-metadata.json`
 4. **`pnpm generate-catalog`** — reads each `public/guides/*/project.json` (`scripts/generate-catalog.ts`) and writes `src/catalog/projects.generated.json`
 

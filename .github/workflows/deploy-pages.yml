@@ -46,10 +46,27 @@ jobs:
         env:
           DIY_GUIDES_PATH: ./diy-guides
 
+      # Restore before prebuild so sync-guides can preserve images/thumbnails/
+      # and diy-guide-images can skip via sourceHash. Clear via Actions → Caches.
+      - name: Restore guide thumbnail cache
+        uses: actions/cache/restore@v4
+        with:
+          path: public/guides/**/images/thumbnails
+          key: guide-thumbnails-${{ github.run_id }}
+          restore-keys: |
+            guide-thumbnails-
+
       - name: Build
         run: pnpm build
         env:
           DIY_GUIDES_PATH: ./diy-guides
+
+      - name: Save guide thumbnail cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: public/guides/**/images/thumbnails
+          key: guide-thumbnails-${{ github.run_id }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
