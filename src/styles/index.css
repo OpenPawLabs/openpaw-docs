@@ -3,6 +3,11 @@
 @import "@heroui/styles";
 @import "@openpawlabs/diy-guides-ui/styles";
 
+:root {
+  /* Brand purple for markdown inline links in guide copy */
+  --guide-link: #882ff6;
+}
+
 @theme {
   /* Body — instructions, descriptions, captions */
   --font-sans: "Nunito", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
