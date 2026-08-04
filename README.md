@@ -68,11 +68,26 @@ Navigation and chrome live in this app (not in `@openpawlabs/diy-guides-ui`):
 
 Pure helpers in `src/lib/guides/navigation.ts` (`getGuideNavigation`, `subguideTitle`) derive adjacency from the generated catalog order (from diy-guides `project.json` manifests).
 
+## Analytics
+
+The site loads [Google Analytics 4](https://analytics.google.com/) and [Microsoft Clarity](https://clarity.microsoft.com/) when measurement IDs are present at build time:
+
+| Variable | Purpose |
+|----------|---------|
+| `VITE_GA_MEASUREMENT_ID` | GA4 measurement ID (`G-…`) |
+| `VITE_CLARITY_PROJECT_ID` | Clarity project ID |
+
+Vite inlines these into the client bundle. Production builds get them from GitHub Actions repository secrets (Settings → Secrets and variables → Actions). For local verification, copy [`.env.example`](.env.example) to `.env.local`.
+
+GA4 pageviews are sent on every React Router navigation (including hash changes). Clarity uses the History API for heatmaps and session recordings without a separate pageview hook. When either ID is unset, that tool is skipped.
+
 ## Deployment
 
 GitHub Actions (`.github/workflows/deploy-pages.yml`) checks out both `openpaw-docs` and `diy-guides`, builds, and deploys `dist/` to GitHub Pages.
 
 Configure the custom domain `docs.openpawlabs.com` in repository Pages settings. `public/CNAME` is included for GitHub Pages.
+
+For analytics on the deployed site, add repository secrets `VITE_GA_MEASUREMENT_ID` and `VITE_CLARITY_PROJECT_ID` (see [Analytics](#analytics)).
 
 ## License
 
