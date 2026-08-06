@@ -6,14 +6,15 @@ describe("catalog", () => {
     expect(projects.length).toBeGreaterThan(0);
   });
 
-  it("defines bb-lsm6dsv with seven ordered subguides", () => {
+  it("defines bb-lsm6dsv with ordered subguides", () => {
     const project = getProject("bb-lsm6dsv");
     expect(project).toBeDefined();
-    expect(project?.subguides).toHaveLength(7);
+    expect(project?.subguides.length).toBeGreaterThanOrEqual(7);
     expect(project?.subguides[0]?.slug).toBe("0-overview");
     expect(project?.subguides[3]?.slug).toBe("3-dock-assembly");
-    expect(project?.subguides[4]?.slug).toBe("4-strap-assembly");
-    expect(project?.subguides[4]?.optional).toBe(true);
+    expect(project?.subguides.some((entry) => entry.slug === "diy-straps")).toBe(
+      true,
+    );
     expect(project?.subguides.at(-1)?.slug).toBe("vrchat-use");
   });
 

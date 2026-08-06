@@ -1,6 +1,5 @@
 import { Alert, Spinner } from "@heroui/react";
 import {
-  GUIDE_IMAGE_VARIANTS_PATH,
   GuideImageVariantsProvider,
   type GuideImageVariantsManifest,
 } from "@openpawlabs/diy-guides-ui";
@@ -10,14 +9,19 @@ import { GuideSidebarNav } from "../components/guide-nav/GuideSidebarNav";
 import { GuidePager } from "../components/GuidePager";
 import { getProject, getSubguide } from "../catalog/projects";
 import { useRouterHashChangeBridge } from "../hooks/useRouterHashChangeBridge";
-import { guideBaseUrl, guideMdxUrl } from "../lib/guides/metadata";
-import { compileGuide, formatMdxError } from "../lib/mdx/compileGuide";
+import {
+  getCachedGuide,
+  loadGuideModule,
+} from "../lib/guides/guideRegistry";
+import {
+  getCachedVariants,
+  loadVariantsManifest,
+} from "../lib/guides/variants";
 import {
   guideMdxComponents,
   setGuideProgressHandler,
 } from "../lib/mdx/guideMdxComponents";
 import type { GuideMdxComponent } from "../lib/mdx/guideComponents";
-import { rewriteAssetUrls } from "../lib/mdx/rewriteAssetUrls";
 
 type LoadState =
   | { status: "loading" }
@@ -28,67 +32,24 @@ type LoadState =
     }
   | { status: "error"; message: string };
 
-async function loadVariantsManifest(
-  base: string,
-): Promise<GuideImageVariantsManifest | null> {
-  try {
-    const response = await fetch(new URL(GUIDE_IMAGE_VARIANTS_PATH, base).href);
-    if (!response.ok) {
-      return null;
-    }
-    return (await response.json()) as GuideImageVariantsManifest;
-  } catch {
-    return null;
+function initialLoadState(guidePath: string): LoadState {
+  const Content = getCachedGuide(guidePath);
+  if (!Content) {
+    return { status: "loading" };
   }
+
+  const variants = getCachedVariants(guidePath);
+  return {
+    status: "ready",
+    Content,
+    variants: variants === undefined ? null : variants,
+  };
 }
 
 export function GuidePage() {
   const { projectId = "", guideSlug = "" } = useParams();
   const project = getProject(projectId);
   const subguide = project ? getSubguide(project, guideSlug) : undefined;
-  const [state, setState] = useState<LoadState>({ status: "loading" });
-
-  const guidePath = subguide?.path;
-  const mdxUrl = guidePath ? guideMdxUrl(guidePath) : null;
-
-  useEffect(() => {
-    if (!mdxUrl || !guidePath) {
-      return;
-    }
-
-    let cancelled = false;
-
-    void (async () => {
-      setState({ status: "loading" });
-
-      try {
-        const response = await fetch(mdxUrl);
-        if (!response.ok) {
-          throw new Error(`Could not load guide (HTTP ${response.status}).`);
-        }
-
-        const source = await response.text();
-        const base = guideBaseUrl(guidePath);
-        const rewritten = rewriteAssetUrls(source, base);
-        const [Content, variants] = await Promise.all([
-          compileGuide(rewritten, base),
-          loadVariantsManifest(base),
-        ]);
-
-        if (!cancelled) {
-          setState({ status: "ready", Content, variants });
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setState({ status: "error", message: formatMdxError(error) });
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [guidePath, mdxUrl]);
 
   if (!project || !subguide) {
     return (
@@ -109,9 +70,10 @@ export function GuidePage() {
 
   return (
     <GuidePageBody
+      key={subguide.path}
       currentSlug={guideSlug}
+      guidePath={subguide.path}
       project={project}
-      state={state}
     />
   );
 }
@@ -119,15 +81,50 @@ export function GuidePage() {
 function GuidePageBody({
   project,
   currentSlug,
-  state,
+  guidePath,
 }: {
   project: NonNullable<ReturnType<typeof getProject>>;
   currentSlug: string;
-  state: LoadState;
+  guidePath: string;
 }) {
   useRouterHashChangeBridge();
-
   const sidebarScrollRef = useRef<HTMLDivElement>(null);
+  const [state, setState] = useState<LoadState>(() => initialLoadState(guidePath));
+
+  useEffect(() => {
+    if (state.status === "ready") {
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const [Content, variants] = await Promise.all([
+          loadGuideModule(guidePath),
+          loadVariantsManifest(guidePath),
+        ]);
+
+        if (!cancelled) {
+          setState({ status: "ready", Content, variants });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setState({
+            status: "error",
+            message:
+              error instanceof Error
+                ? error.message
+                : "The guide could not be loaded.",
+          });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [guidePath, state.status]);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-3 sm:py-8 sm:px-6 lg:py-0 lg:pt-10">

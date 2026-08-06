@@ -42,18 +42,17 @@ export function GuideReaderProvider({
   children: ReactNode;
 }) {
   const [activeStep, setActiveStep] = useState<number | null>(null);
-  const [stepCompletion, setStepCompletion] = useState<Record<number, boolean>>(() =>
-    readStoredStepCompletion(projectId, guideSlug),
-  );
+  // Always start empty so SSR / first client paint match; hydrate from storage in an effect.
+  const [stepCompletion, setStepCompletion] = useState<Record<number, boolean>>({});
   const totalStepsRef = useRef(0);
 
   useEffect(() => {
-    setActiveStep(null);
-
+    // Hydrate completion from localStorage after mount so SSR HTML stays pristine.
+    // Provider remounts via key when projectId/guideSlug change (see SiteLayout).
     const syncFromStorage = () => {
-      const stored = getProgressSnapshot(projectId, guideSlug);
-      setStepCompletion(stepCompletionFromStorage(stored?.steps));
+      setStepCompletion(readStoredStepCompletion(projectId, guideSlug));
 
+      const stored = getProgressSnapshot(projectId, guideSlug);
       if (stored?.total) {
         totalStepsRef.current = stored.total;
       }

@@ -4,16 +4,6 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <meta charset="UTF-8" />
     <script>
-      // Restore deep links saved by public/404.html before React Router mounts.
-      (function () {
-        var redirect = sessionStorage.getItem("spa-redirect");
-        if (redirect) {
-          sessionStorage.removeItem("spa-redirect");
-          history.replaceState(null, "", redirect);
-        }
-      })();
-    </script>
-    <script>
       // Apply stored theme before paint to avoid a flash (matches HeroUI useTheme).
       (function () {
         var theme = localStorage.getItem("heroui-theme") || "system";
@@ -34,6 +24,7 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Nunito:ital,wght@0,400..700;1,400..700&display=swap"
       rel="stylesheet"
     />
+    <!--app-head-->
     <meta
       name="description"
       content="OpenPaw Labs DIY guides — step-by-step maker projects for VR and hardware."

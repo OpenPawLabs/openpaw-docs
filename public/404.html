@@ -3,16 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OpenPaw Labs Docs</title>
+    <meta name="robots" content="noindex" />
+    <title>Page not found | OpenPaw Labs Docs</title>
+    <meta
+      http-equiv="refresh"
+      content="0; url=/"
+    />
     <script>
-      // GitHub Pages SPA fallback — save the intended path, then load the app from /.
-      // index.html restores the path before React Router mounts.
-      sessionStorage.setItem(
-        "spa-redirect",
-        location.pathname + location.search + location.hash,
-      );
+      // Unknown paths fall back to the homepage. Known catalog routes are
+      // prerendered as real HTML files and never hit this page.
       location.replace("/");
     </script>
   </head>
-  <body></body>
+  <body>
+    <p>
+      <a href="/">Return to OpenPaw Labs Docs</a>
+    </p>
+  </body>
 </html>

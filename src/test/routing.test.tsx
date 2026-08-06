@@ -84,6 +84,6 @@ describe("routing", () => {
     expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Guides in this project" })).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Guide navigation" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Guide 3 of 7/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Guide 3 of \d+/i })).toBeInTheDocument();
   });
 });

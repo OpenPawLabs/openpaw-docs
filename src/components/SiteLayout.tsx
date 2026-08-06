@@ -26,7 +26,11 @@ export function SiteLayout({ children }: SiteLayoutProps) {
   );
   const guideReaderShell = (content: ReactNode) =>
     projectId && guideSlug ? (
-      <GuideReaderProvider guideSlug={guideSlug} projectId={projectId}>
+      <GuideReaderProvider
+        key={`${projectId}/${guideSlug}`}
+        guideSlug={guideSlug}
+        projectId={projectId}
+      >
         {content}
       </GuideReaderProvider>
     ) : (

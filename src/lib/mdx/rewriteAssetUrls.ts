@@ -1,19 +1,19 @@
 import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
+import { resolveGuideAssetPathname } from "../guides/assetPaths";
 
 const URL_ATTRIBUTES = new Set(["src", "href", "thumbnail", "poster", "heroImage"]);
 
-export function resolveAgainst(base: string): (value: string) => string {
-  return (value) => (isAbsolute(value) ? value : new URL(value, base).href);
-}
-
-export function rewriteAssetUrls(source: string, base: string): string {
-  const resolve = resolveAgainst(base);
+/**
+ * Rewrite relative asset attributes in MDX source to site-absolute `/guides/…` paths.
+ * Prefer the remark plugin at compile time; this remains for unit tests and tooling.
+ */
+export function rewriteAssetUrls(source: string, guidePath: string): string {
   const tree = unified().use(remarkParse).use(remarkMdx).parse(source) as MdxNode;
   const edits: Edit[] = [];
 
-  collectAttributeEdits(tree, resolve, edits);
+  collectAttributeEdits(tree, guidePath, edits);
 
   edits.sort((a, b) => b.start - a.start);
   let output = source;
@@ -45,7 +45,7 @@ interface MdxNode {
 
 function collectAttributeEdits(
   node: MdxNode,
-  resolve: (value: string) => string,
+  guidePath: string,
   edits: Edit[],
 ): void {
   for (const attribute of node.attributes ?? []) {
@@ -59,7 +59,7 @@ function collectAttributeEdits(
       continue;
     }
 
-    const resolved = resolve(attribute.value);
+    const resolved = resolveGuideAssetPathname(guidePath, attribute.value);
     if (resolved === attribute.value) {
       continue;
     }
@@ -72,10 +72,6 @@ function collectAttributeEdits(
   }
 
   for (const child of node.children ?? []) {
-    collectAttributeEdits(child, resolve, edits);
+    collectAttributeEdits(child, guidePath, edits);
   }
-}
-
-function isAbsolute(value: string): boolean {
-  return /^[a-z][a-z0-9+.-]*:/i.test(value) || value.startsWith("//");
 }

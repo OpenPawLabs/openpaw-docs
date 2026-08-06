@@ -79,11 +79,23 @@ function progressRecordsEqual(
   );
 }
 
+function canUseLocalStorage(): boolean {
+  try {
+    return (
+      typeof localStorage !== "undefined" &&
+      typeof localStorage.getItem === "function" &&
+      typeof localStorage.setItem === "function"
+    );
+  } catch {
+    return false;
+  }
+}
+
 function readFromStorage(
   projectId: string,
   guideSlug: string,
 ): GuideProgressRecord | null {
-  if (typeof localStorage === "undefined") {
+  if (!canUseLocalStorage()) {
     return null;
   }
 
@@ -177,7 +189,7 @@ export function writeGuideProgress(
   guideSlug: string,
   progress: GuideProgressRecord,
 ): boolean {
-  if (typeof localStorage === "undefined") {
+  if (!canUseLocalStorage()) {
     return false;
   }
 
@@ -207,7 +219,7 @@ export function writeGuideStepCompletion(
 }
 
 export function clearGuideProgress(projectId: string, guideSlug: string): void {
-  if (typeof localStorage === "undefined") {
+  if (!canUseLocalStorage()) {
     return;
   }
 
@@ -223,10 +235,16 @@ export function clearProjectProgress(projectId: string, guideSlugs: string[]): v
 
 export function subscribeProgress(onStoreChange: () => void): () => void {
   listeners.add(onStoreChange);
-  window.addEventListener("storage", onStoreChange);
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("storage", onStoreChange);
+  }
+
   return () => {
     listeners.delete(onStoreChange);
-    window.removeEventListener("storage", onStoreChange);
+    if (typeof window !== "undefined") {
+      window.removeEventListener("storage", onStoreChange);
+    }
   };
 }
 

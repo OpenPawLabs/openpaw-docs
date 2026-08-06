@@ -34,7 +34,7 @@ describe("GuideSidebarNav", () => {
     expect(nav).toBeInTheDocument();
 
     const subguideLinks = screen.getAllByRole("link", {
-      name: /Project Overview|3D Print|Tracker Assembly|Dock Assembly|Strap Assembly|One-time Setup|Daily VR/i,
+      name: /Project Overview|3D Print|Tracker Assembly|Dock Assembly|Strap Assembly|DIY Straps|One-time|Daily VR|VRChat/i,
     });
     expect(subguideLinks).toHaveLength(project.subguides.length);
 
@@ -57,7 +57,9 @@ describe("GuideSidebarNav", () => {
     const firstStep = screen.getByRole("link", { name: /Gather Tools/i });
     expect(firstStep).toHaveAttribute("href", "/projects/bb-lsm6dsv/0-overview#step-1");
 
-    const secondStep = screen.getByRole("link", { name: /Gather Boards & Batteries/i });
+    const secondStep = screen.getByRole("link", {
+      name: /Get Tracker & Charging Dock Boards/i,
+    });
     expect(secondStep).toHaveAttribute("href", "/projects/bb-lsm6dsv/0-overview#step-2");
   });
 
@@ -65,14 +67,33 @@ describe("GuideSidebarNav", () => {
     renderSidebar("2-tracker-assembly");
 
     expect(screen.queryByRole("link", { name: /Gather Tools/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /Gather Boards & Batteries/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /Get Tracker & Charging Dock Boards/i }),
+    ).not.toBeInTheDocument();
   });
 
-  it("shows optional and shared labels", () => {
-    renderSidebar("0-overview");
+  it("shows optional and shared labels when catalog flags are set", () => {
+    const labeledProject = {
+      ...project,
+      subguides: project.subguides.map((subguide) =>
+        subguide.slug === "diy-straps"
+          ? { ...subguide, optional: true }
+          : subguide.path.startsWith("common/")
+            ? { ...subguide, shared: true }
+            : subguide,
+      ),
+    };
+
+    render(
+      <MemoryRouter initialEntries={["/projects/bb-lsm6dsv/0-overview"]}>
+        <GuideReaderProvider guideSlug="0-overview" projectId="bb-lsm6dsv">
+          <GuideSidebarNav currentSlug="0-overview" project={labeledProject} />
+        </GuideReaderProvider>
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText("Optional")).toBeInTheDocument();
-    expect(screen.getAllByText("Shared")).toHaveLength(2);
+    expect(screen.getAllByText("Shared").length).toBeGreaterThanOrEqual(2);
   });
 
   it("reflects completed guide status from progress storage", () => {

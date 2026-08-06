@@ -14,7 +14,7 @@
     "prebuild": "pnpm sync-guides && pnpm generate-images && pnpm extract-metadata && pnpm generate-catalog",
     "pretest": "pnpm predev",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && tsx scripts/prerender.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -24,7 +24,7 @@
   "dependencies": {
     "@heroui/react": "^3.2.1",
     "@heroui/styles": "^3.2.1",
-    "@mdx-js/mdx": "^3.1.1",
+    "@mdx-js/rollup": "^3.1.1",
     "@openpawlabs/diy-guides-ui": "^1.9.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -35,13 +35,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@types/mdast": "^4.0.4",
     "@types/node": "^26.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "@tailwindcss/vite": "^4.3.1",
     "eslint": "^10.5.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
@@ -56,6 +57,9 @@
     "vitest": "^4.1.9"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["sharp", "esbuild"]
+    "onlyBuiltDependencies": [
+      "sharp",
+      "esbuild"
+    ]
   }
 }
