@@ -5,8 +5,11 @@ let initialized = false;
 function ensureGtag(): NonNullable<Window["gtag"]> {
   window.dataLayer ??= [];
   if (typeof window.gtag !== "function") {
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer?.push(args);
+    // Must push `arguments` (not a rest-param Array). gtag.js only treats
+    // Arguments objects as commands when draining the pre-load queue.
+    window.gtag = function gtag() {
+      // eslint-disable-next-line prefer-rest-params -- required by gtag.js
+      window.dataLayer?.push(arguments);
     };
   }
   return window.gtag;

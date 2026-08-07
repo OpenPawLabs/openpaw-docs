@@ -10,8 +10,27 @@ import {
   trackPageView,
 } from "../lib/analytics";
 
+/** Normalize dataLayer rows (Arguments or Array) for assertions. */
 function gtagCalls(): unknown[][] {
-  return (window.dataLayer ?? []) as unknown[][];
+  return (window.dataLayer ?? []).flatMap((entry) => {
+    if (Array.isArray(entry)) {
+      return [entry];
+    }
+    if (
+      entry != null &&
+      typeof entry === "object" &&
+      typeof (entry as { length?: unknown }).length === "number"
+    ) {
+      return [Array.from(entry as ArrayLike<unknown>)];
+    }
+    return [];
+  });
+}
+
+function dataLayerCommandShapes(): string[] {
+  return (window.dataLayer ?? []).map((entry) =>
+    Object.prototype.toString.call(entry),
+  );
 }
 
 function scriptSrcs(): string[] {
@@ -48,6 +67,11 @@ describe("analytics helpers", () => {
     expect(scriptSrcs()).toEqual([
       "https://www.googletagmanager.com/gtag/js?id=G-TEST123",
     ]);
+    // gtag.js ignores plain Arrays in the pre-load queue — only Arguments.
+    expect(dataLayerCommandShapes()).toEqual([
+      "[object Arguments]",
+      "[object Arguments]",
+    ]);
     expect(gtagCalls()).toEqual(
       expect.arrayContaining([
         ["js", expect.any(Date)],
@@ -57,6 +81,7 @@ describe("analytics helpers", () => {
 
     trackPageView("G-TEST123", "/projects/demo#step-2");
 
+    expect(dataLayerCommandShapes()).toContain("[object Arguments]");
     expect(gtagCalls()).toEqual(
       expect.arrayContaining([
         [
