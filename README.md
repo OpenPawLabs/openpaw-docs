@@ -52,7 +52,21 @@ Project membership and order come from diy-guides manifests (`<projectId>/projec
    - `/projects/:projectId` → `dist/projects/:projectId/index.html`
    - `/projects/:projectId/:guideSlug` → `dist/projects/:projectId/:guideSlug/index.html`
 
-Each HTML file includes the full page body plus per-route `<title>`, description, canonical URL, and Open Graph / Twitter tags (`og:image` from the guide `heroImage` when present). The client bundle hydrates that HTML and React Router handles soft navigation between guides. Unknown paths still hit `public/404.html`, which sends visitors home.
+Each HTML file includes the full page body plus per-route `<title>`, description, canonical URL, and Open Graph / Twitter tags (`og:image` from the guide `heroImage` when present). Guide pages also embed [schema.org `HowTo`](https://schema.org/HowTo) JSON-LD (steps, hero image, `totalTime` parsed from `timeEstimate`) and a `rel="alternate" type="text/markdown"` link to their Markdown mirror. The client bundle hydrates that HTML and React Router handles soft navigation between guides. Unknown paths still hit `public/404.html`, which sends visitors home.
+
+### AI / search discovery artifacts
+
+The prerender step also emits text-first artifacts so search engines and AI assistants can find, quote, and link back to the guides:
+
+| Artifact | Content |
+|----------|---------|
+| `dist/sitemap.xml` | Every prerendered route (`buildSitemap`) |
+| `dist/llms.txt` | [llms.txt](https://llmstxt.org/) index — site summary plus one Markdown link per guide (`buildLlmsTxt`) |
+| `dist/llms-full.txt` | All guide Markdown concatenated (`buildLlmsFullTxt`) |
+| `dist/projects/:projectId/:guideSlug.md` | Plain-Markdown mirror of each guide page |
+| `public/robots.txt` | Allows all crawlers (AI crawlers included) and points at the sitemap |
+
+Guide MDX is converted to Markdown by `src/lib/guides/guideToMarkdown.ts` (header facts, intro, tool/material lists with prices and links, numbered steps with bullets; media and visual-only affordances are dropped). The llms/sitemap builders live in `src/lib/seo/llms.ts` and are wired up in `scripts/prerender.ts`.
 
 ### Local UI library link
 

@@ -33,6 +33,35 @@ describe("pageMeta", () => {
     expect(head).toContain('property="og:image"');
     expect(head).toContain('rel="canonical"');
   });
+
+  it("adds a Markdown alternate link and HowTo JSON-LD to guide pages", () => {
+    const meta = getPageMeta("/projects/bb-lsm6dsv/0-overview");
+    expect(meta.markdownPath).toBe("/projects/bb-lsm6dsv/0-overview.md");
+    expect(meta.structuredData).toMatchObject({
+      "@type": "HowTo",
+      totalTime: "PT15M",
+    });
+
+    const steps = meta.structuredData?.step as Array<Record<string, unknown>>;
+    expect(steps.length).toBeGreaterThan(0);
+    expect(steps[0]).toMatchObject({
+      "@type": "HowToStep",
+      position: 1,
+      url: "https://docs.openpawlabs.com/projects/bb-lsm6dsv/0-overview#step-1",
+    });
+
+    const head = renderPageHead(meta);
+    expect(head).toContain(
+      '<link rel="alternate" type="text/markdown" href="https://docs.openpawlabs.com/projects/bb-lsm6dsv/0-overview.md" />',
+    );
+    expect(head).toContain('<script type="application/ld+json">');
+  });
+
+  it("omits structured data and markdown links on non-guide pages", () => {
+    const home = getPageMeta("/");
+    expect(home.markdownPath).toBeUndefined();
+    expect(home.structuredData).toBeUndefined();
+  });
 });
 
 describe("guideRegistry", () => {

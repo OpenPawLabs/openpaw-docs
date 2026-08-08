@@ -1,6 +1,12 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import {
+  buildLlmsFullTxt,
+  buildLlmsTxt,
+  buildSitemap,
+  collectProjectDocs,
+} from "../src/lib/seo/llms";
 import { listPrerenderPaths } from "../src/lib/seo/pageMeta";
 
 const rootDir = resolve(import.meta.dirname, "..");
@@ -32,7 +38,30 @@ async function main() {
     console.log(`  ${path} → ${outFile.replace(rootDir + "\\", "").replace(rootDir + "/", "")}`);
   }
 
+  writeAiDiscoveryFiles(paths);
   console.log("Prerender complete.");
+}
+
+/** sitemap.xml, llms.txt / llms-full.txt, and a Markdown mirror per guide page. */
+function writeAiDiscoveryFiles(paths: string[]) {
+  const sections = collectProjectDocs((guidePath) =>
+    readFileSync(join(rootDir, "public", "guides", guidePath, "guide.mdx"), "utf8"),
+  );
+
+  writeFileSync(join(distDir, "sitemap.xml"), buildSitemap(paths), "utf8");
+  writeFileSync(join(distDir, "llms.txt"), buildLlmsTxt(sections), "utf8");
+  writeFileSync(join(distDir, "llms-full.txt"), buildLlmsFullTxt(sections), "utf8");
+
+  const guides = sections.flatMap((section) => section.guides);
+  for (const guide of guides) {
+    const outFile = join(distDir, `${guide.path.slice(1)}.md`);
+    mkdirSync(dirname(outFile), { recursive: true });
+    writeFileSync(outFile, guide.markdown, "utf8");
+  }
+
+  console.log(
+    `Wrote sitemap.xml, llms.txt, llms-full.txt, and ${guides.length} guide Markdown mirrors.`,
+  );
 }
 
 function injectRenderedApp(template: string, appHtml: string, head: string): string {

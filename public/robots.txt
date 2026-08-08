@@ -1,0 +1,7 @@
+# docs.openpawlabs.com — everything here is public documentation.
+# AI crawlers and assistants are welcome; see /llms.txt for a Markdown index.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.openpawlabs.com/sitemap.xml

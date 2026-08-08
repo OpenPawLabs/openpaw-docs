@@ -14,6 +14,10 @@ export interface PageMeta {
   path: string;
   image?: string;
   imageAlt?: string;
+  /** Site path of the plain-Markdown mirror of this page (guide pages only). */
+  markdownPath?: string;
+  /** schema.org JSON-LD embedded in the page head (HowTo for guide pages). */
+  structuredData?: Record<string, unknown>;
 }
 
 export function absoluteUrl(path: string): string {
@@ -100,14 +104,58 @@ function guidePageMeta(project: ProjectEntry, guideSlug: string): PageMeta {
   const metadata = getGuideMetadata(subguide.path);
   const title = subguideTitle(subguide);
   const hero = resolveHeroImage(subguide.path, metadata);
+  const description = subguide.description || project.description || DEFAULT_DESCRIPTION;
+  const image = hero.src ? absoluteUrl(hero.src) : undefined;
+  const steps = metadata?.steps ?? [];
 
   return {
     title: `${title} | ${project.title}`,
-    description: subguide.description || project.description || DEFAULT_DESCRIPTION,
+    description,
     path,
-    image: hero.src ? absoluteUrl(hero.src) : undefined,
+    image,
     imageAlt: hero.alt || title,
+    markdownPath: `${path}.md`,
+    structuredData:
+      steps.length > 0
+        ? howToStructuredData(title, description, path, steps, image, metadata?.timeEstimate)
+        : undefined,
   };
+}
+
+function howToStructuredData(
+  name: string,
+  description: string,
+  path: string,
+  steps: Array<{ title?: string }>,
+  image: string | undefined,
+  timeEstimate: string | undefined,
+): Record<string, unknown> {
+  const totalTime = isoDuration(timeEstimate);
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    description,
+    ...(image ? { image } : {}),
+    ...(totalTime ? { totalTime } : {}),
+    step: steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.title ?? `Step ${index + 1}`,
+      url: `${absoluteUrl(path)}#step-${index + 1}`,
+    })),
+  };
+}
+
+/** "15 minutes" → "PT15M", "1-2 hours" → "PT2H"; undefined when unparseable. */
+function isoDuration(timeEstimate: string | undefined): string | undefined {
+  const match = /(?:(\d+)\s*-\s*)?(\d+)\s*(minute|min|hour|hr)/i.exec(timeEstimate ?? "");
+  if (!match) {
+    return undefined;
+  }
+
+  const amount = Number(match[2]);
+  return /^h/i.test(match[3]) ? `PT${amount}H` : `PT${amount}M`;
 }
 
 /** Serialize page meta into tags injected into the HTML shell. */
@@ -134,6 +182,18 @@ export function renderPageHead(meta: PageMeta): string {
         `<meta property="og:image:alt" content="${escapeHtml(meta.imageAlt)}" />`,
       );
     }
+  }
+
+  if (meta.markdownPath) {
+    tags.push(
+      `<link rel="alternate" type="text/markdown" href="${escapeHtml(absoluteUrl(meta.markdownPath))}" />`,
+    );
+  }
+
+  if (meta.structuredData) {
+    // Escape "<" so a "</script>" inside string values cannot break out of the tag.
+    const json = JSON.stringify(meta.structuredData).replaceAll("<", "\\u003c");
+    tags.push(`<script type="application/ld+json">${json}</script>`);
   }
 
   return tags.join("\n    ");
